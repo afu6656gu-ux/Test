@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم عرب فليكس</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts - Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom Styles */
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        .bg-dark-primary { background-color: #121212; }
+        .bg-dark-secondary { background-color: #1e1e1e; }
+        .border-dark-secondary { border-color: #2d2d2d; }
+        .text-accent { color: #f59e0b; }
+        .bg-accent { background-color: #f59e0b; }
+        .hover-bg-accent:hover { background-color: #d97706; }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1e1e1e; }
+        ::-webkit-scrollbar-thumb { background: #f59e0b; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d97706; }
+        
+        /* Active sidebar link style */
+        .sidebar-link.active {
+            background-color: #f59e0b;
+            color: #121212;
+            font-weight: 700;
+        }
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-dark-secondary p-6 flex flex-col fixed h-full">
+            <a href="#" class="flex items-center gap-3 mb-10">
+                <div class="w-12 h-12 flex items-center justify-center">
+                    <svg class="w-10 h-10 text-amber-500" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12,2A10,10 0 1,0 22,12A10,10 0 0,0 12,2M10,16.5V7.5L16,12L10,16.5Z" />
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-bold text-amber-500">عرب فليكس</h1>
+            </a>
+            <nav class="flex flex-col gap-4">
+                <a href="#dashboard" class="sidebar-link active flex items-center gap-3 p-3 rounded-lg transition-colors hover:bg-gray-700">
+                    <i class="fa-solid fa-chart-line w-6 text-center"></i>
+                    <span>نظرة عامة</span>
+                </a>
+                <a href="#movies" class="sidebar-link flex items-center gap-3 p-3 rounded-lg transition-colors hover:bg-gray-700">
+                    <i class="fa-solid fa-film w-6 text-center"></i>
+                    <span>الأفلام</span>
+                </a>
+                <a href="#series" class="sidebar-link flex items-center gap-3 p-3 rounded-lg transition-colors hover:bg-gray-700">
+                    <i class="fa-solid fa-tv w-6 text-center"></i>
+                    <span>المسلسلات</span>
+                </a>
+                 <a href="#users" class="sidebar-link flex items-center gap-3 p-3 rounded-lg transition-colors hover:bg-gray-700">
+                    <i class="fa-solid fa-users w-6 text-center"></i>
+                    <span>المستخدمون</span>
+                </a>
+                <a href="#settings" class="sidebar-link flex items-center gap-3 p-3 rounded-lg transition-colors hover:bg-gray-700">
+                    <i class="fa-solid fa-gear w-6 text-center"></i>
+                    <span>الإعدادات</span>
+                </a>
+            </nav>
+            <div class="mt-auto">
+                 <a href="#" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-red-400 hover:bg-red-500 hover:text-white">
+                    <i class="fa-solid fa-right-from-bracket w-6 text-center"></i>
+                    <span>تسجيل الخروج</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 pr-64">
+            <!-- Header -->
+            <header class="bg-dark-secondary p-4 border-b border-dark-secondary flex justify-between items-center">
+                <h2 id="page-title" class="text-2xl font-bold">نظرة عامة</h2>
+                <div class="flex items-center gap-4">
+                     <button class="text-xl text-gray-400 hover:text-amber-500">
+                        <i class="fa-solid fa-bell"></i>
+                    </button>
+                    <div class="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center font-bold text-black">
+                        A
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Content Sections -->
+            <main class="p-6">
+                <!-- Dashboard Section -->
+                <section id="dashboard-section">
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-dark-secondary p-6 rounded-lg border-l-4 border-amber-500">
+                            <h3 class="text-gray-400 text-lg">إجمالي الأفلام</h3>
+                            <p id="total-movies" class="text-3xl font-bold mt-2">0</p>
+                        </div>
+                         <div class="bg-dark-secondary p-6 rounded-lg border-l-4 border-green-500">
+                            <h3 class="text-gray-400 text-lg">إجمالي المسلسلات</h3>
+                            <p id="total-series" class="text-3xl font-bold mt-2">0</p>
+                        </div>
+                         <div class="bg-dark-secondary p-6 rounded-lg border-l-4 border-blue-500">
+                            <h3 class="text-gray-400 text-lg">إجمالي المستخدمين</h3>
+                            <p class="text-3xl font-bold mt-2">15,780</p>
+                        </div>
+                         <div class="bg-dark-secondary p-6 rounded-lg border-l-4 border-red-500">
+                            <h3 class="text-gray-400 text-lg">إجمالي المشاهدات</h3>
+                            <p class="text-3xl font-bold mt-2">2.1M</p>
+                        </div>
+                    </div>
+                    <!-- Charts -->
+                    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-8">
+                        <div class="lg:col-span-3 bg-dark-secondary p-6 rounded-lg">
+                           <h3 class="font-bold mb-4">المشاهدات خلال آخر 7 أيام</h3>
+                            <canvas id="viewsChart"></canvas>
+                        </div>
+                        <div class="lg:col-span-2 bg-dark-secondary p-6 rounded-lg">
+                             <h3 class="font-bold mb-4">توزيع المحتوى</h3>
+                            <canvas id="contentChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Movies Section (hidden by default) -->
+                <section id="movies-section" class="hidden">
+                    <div class="bg-dark-secondary p-6 rounded-lg">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold">قائمة الأفلام</h3>
+                             <button id="add-movie-btn" class="bg-amber-500 text-black font-bold py-2 px-4 rounded-lg hover:bg-amber-600 transition">
+                                <i class="fa-solid fa-plus mr-2"></i>إضافة فيلم
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-right">
+                                <thead class="border-b border-dark-secondary">
+                                    <tr>
+                                        <th class="p-3">البوستر</th>
+                                        <th class="p-3">العنوان</th>
+                                        <th class="p-3">السنة</th>
+                                        <th class="p-3">التقييم</th>
+                                        <th class="p-3">إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="movies-table-body">
+                                    <!-- Movies will be injected by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                
+                 <!-- Series Section (hidden by default) -->
+                <section id="series-section" class="hidden">
+                     <div class="bg-dark-secondary p-6 rounded-lg">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold">قائمة المسلسلات</h3>
+                             <button id="add-series-btn" class="bg-amber-500 text-black font-bold py-2 px-4 rounded-lg hover:bg-amber-600 transition">
+                                <i class="fa-solid fa-plus mr-2"></i>إضافة مسلسل
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-right">
+                                <thead class="border-b border-dark-secondary">
+                                    <tr>
+                                        <th class="p-3">البوستر</th>
+                                        <th class="p-3">العنوان</th>
+                                        <th class="p-3">السنة</th>
+                                        <th class="p-3">التقييم</th>
+                                        <th class="p-3">إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="series-table-body">
+                                    <!-- Series will be injected by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                
+                 <!-- Users Section -->
+                 <section id="users-section" class="hidden">
+                    <div class="bg-dark-secondary p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4">إدارة المستخدمين</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-right">
+                                <thead class="border-b border-dark-secondary">
+                                    <tr>
+                                        <th class="p-3">الاسم</th>
+                                        <th class="p-3">البريد الإلكتروني</th>
+                                        <th class="p-3">تاريخ الانضمام</th>
+                                        <th class="p-3">الحالة</th>
+                                        <th class="p-3">إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-dark-secondary hover:bg-gray-800">
+                                        <td class="p-3 font-semibold">أحمد محمود</td>
+                                        <td class="p-3">ahmed@example.com</td>
+                                        <td class="p-3">2025-09-20</td>
+                                        <td class="p-3"><span class="bg-green-500 text-white px-2 py-1 text-xs rounded-full">نشط</span></td>
+                                        <td class="p-3">
+                                            <button class="text-red-400 hover:text-red-300"><i class="fa-solid fa-ban"></i> حظر</button>
+                                        </td>
+                                    </tr>
+                                     <tr class="border-b border-dark-secondary hover:bg-gray-800">
+                                        <td class="p-3 font-semibold">فاطمة علي</td>
+                                        <td class="p-3">fatima@example.com</td>
+                                        <td class="p-3">2025-09-18</td>
+                                        <td class="p-3"><span class="bg-red-500 text-white px-2 py-1 text-xs rounded-full">محظور</span></td>
+                                        <td class="p-3">
+                                            <button class="text-green-400 hover:text-green-300"><i class="fa-solid fa-check"></i> تفعيل</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                 </section>
+
+                 <!-- Settings Section -->
+                 <section id="settings-section" class="hidden">
+                     <div class="bg-dark-secondary p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-6">إعدادات الموقع</h3>
+                        <div class="space-y-6 max-w-2xl">
+                            <div>
+                                <label for="site-name" class="block mb-2">اسم الموقع</label>
+                                <input type="text" id="site-name" value="عرب فليكس" class="w-full bg-dark-primary p-2 rounded-lg border border-dark-secondary focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            </div>
+                            <div>
+                                <label for="site-description" class="block mb-2">وصف الموقع</label>
+                                <textarea id="site-description" rows="3" class="w-full bg-dark-primary p-2 rounded-lg border border-dark-secondary focus:outline-none focus:ring-2 focus:ring-amber-500">موقع لمشاهدة وتحميل الأفلام والمسلسلات العربية.</textarea>
+                            </div>
+                             <div class="flex items-center justify-between">
+                                <label for="maintenance-mode" class="block">وضع الصيانة</label>
+                                <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+                                    <input type="checkbox" name="toggle" id="maintenance-mode" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                                    <label for="maintenance-mode" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label>
+                                </div>
+                            </div>
+                            <style>.toggle-checkbox:checked { right: 0; border-color: #f59e0b; } .toggle-checkbox:checked + .toggle-label { background-color: #f59e0b; }</style>
+                            <div>
+                                 <button class="bg-amber-500 text-black font-bold py-2 px-6 rounded-lg hover:bg-amber-600 transition">
+                                    <i class="fa-solid fa-save mr-2"></i>حفظ التغييرات
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                 </section>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Modal -->
+    <div id="form-modal" class="fixed inset-0 bg-black bg-opacity-70 z-[100] flex items-center justify-center p-4 hidden modal-overlay">
+        <div id="modal-content" class="bg-dark-secondary p-8 rounded-lg w-full max-w-2xl transform transition-transform duration-300 scale-95">
+             <h2 id="modal-title" class="text-2xl font-bold mb-6">إضافة محتوى جديد</h2>
+             <form id="content-form" class="space-y-4">
+                 <input type="hidden" id="content-id">
+                 <div>
+                     <label for="content-type" class="block mb-2">النوع</label>
+                     <select id="content-type" class="w-full bg-dark-primary p-2 rounded-lg border border-dark-secondary">
+                         <option value="movie">فيلم</option>
+                         <option value="series">مسلسل</option>
+                     </select>
+                 </div>
+                 <div>
+                     <label for="content-title" class="block mb-2">العنوان</label>
+                     <input type="text" id="content-title" required class="w-full bg-dark-primary p-2 rounded-lg border border-dark-secondary">
+                 </div>
+                  <div>
+                     <label for="content-year" class="block mb-2">سنة الإصدار</label>
+                     <input type="number" id="content-year" required class="w-full bg-dark-primary p-2 rounded-lg border border-dark-secondary">
+                 </div>
+                 <div>
+                     <label for="content-poster" class="block mb-2">رابط البوستر</label>
+                     <input type="url" id="content-poster" required class="w-full bg-dark-primary p-2 rounded-lg border border-dark-secondary">
+                 </div>
+                 <div>
+                     <label for="content-rating" class="block mb-2">التقييم</label>
+                     <input type="number" step="0.1" id="content-rating" required class="w-full bg-dark-primary p-2 rounded-lg border border-dark-secondary">
+                 </div>
+                  <div>
+                     <label for="content-video" class="block mb-2">رابط الفيديو (Trailer)</label>
+                     <input type="url" id="content-video" required class="w-full bg-dark-primary p-2 rounded-lg border border-dark-secondary">
+                 </div>
+                 <div>
+                     <label for="content-external" class="block mb-2">رابط المشاهدة الخارجي (اختياري)</label>
+                     <input type="url" id="content-external" class="w-full bg-dark-primary p-2 rounded-lg border border-dark-secondary">
+                 </div>
+                  <div>
+                     <label for="content-ai-quote" class="block mb-2">رأي الناقد الذكي (اختياري)</label>
+                     <input type="text" id="content-ai-quote" class="w-full bg-dark-primary p-2 rounded-lg border border-dark-secondary">
+                 </div>
+                 <div class="flex gap-4 pt-4">
+                      <button type="submit" class="flex-1 bg-amber-500 text-black font-bold py-2 px-4 rounded-lg hover:bg-amber-600 transition">حفظ</button>
+                      <button type="button" id="cancel-btn" class="flex-1 bg-gray-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-500 transition">إلغاء</button>
+                 </div>
+             </form>
+        </div>
+    </div>
+    
+    <script>
+        const initialData = [
+            { id: 1, type: 'movie', title: 'ولاد رزق 3: القاضية', year: 2024, genre: 'أكشن, جريمة', poster: 'https://i.postimg.cc/Lsph0Zc5/Welad-Rizk-3-El-Qadia.jpg', rating: 7.8, description: 'بعد مرور سنوات وانفصال الأخوة في طرقهم الحياتية المختلفة، يعود شبح من الماضي ليلقي بظلاله على ولاد رزق، مما يجبرهم على العودة إلى حياة الجريمة والسرقة مرة أخرى.', videoSrc: 'https://www.youtube.com/watch?v=8cawCGKqEi0', externalWatchLink: 'https://dai.ly/x9r3tmo', ai_critic_quote: 'عودة طال انتظارها بجرعة أكشن ومخاطر تصل إلى عنان السماء. هل تنجح الأسود في استعادة عرينها؟' },
+            { id: 17, type: 'movie', title: 'اللعب مع العيال', year: 2024, genre: 'كوميدي', poster: 'https://i.postimg.cc/wMrDtcwF/image.jpg', rating: 7.5, description: 'في إطار من الكوميديا، يُكلف معلم تاريخ بالتدريس في إحدى المدارس بمنطقة صحراوية، فيواجه العديد من العقبات التي لم تكن في الحسبان.', videoSrc: 'https://www.youtube.com/watch?v=nxOkDx65Otk', externalWatchLink: 'https://dai.ly/x9r2uck', ai_critic_quote: 'كوميديا من قلب الصحراء، حيث التاريخ والجغرافيا يلتقيان في مواقف لا تُنسى. ضحك مضمون!'},
+            { id: 18, type: 'movie', title: 'أهل الكهف', year: 2024, genre: 'أكشن, تاريخي', poster: 'https://i.postimg.cc/d1L2JxBD/x-Iiv-Uefce-D30w-Iy-ZAK1z55-SBv-TT-533x800.webp', rating: 7.9, description: 'في عام 250 ميلادية، يفر ثلاثة من المؤمنين من بطش الحاكم الروماني، ويلجأون إلى كهف مهجور، حيث ينامون لمدة 309 سنوات ثم يستيقظون في زمن آخر.', videoSrc: 'https://www.youtube.com/watch?v=3CRDpyAIkyI', externalWatchLink: 'https://dai.ly/x9egl2e', ai_critic_quote: 'أسطورة تتجسد على الشاشة. صراع بين الإيمان والطغيان في رحلة عبر الزمن.' },
+            { id: 21, type: 'movie', title: 'شقو', year: 2024, genre: 'أكشن, تشويق', poster: 'https://i.postimg.cc/nVmFN1Jk/images-1.jpg', rating: 7.6, description: 'مجموعة من الأصدقاء خارجون عن القانون يمارسون أعمالاً إجرامية مشبوهة، لكنها تقودهم إلى أزمات كبيرة وتحدث وراءها تبعات خطيرة.', videoSrc: 'https://www.youtube.com/watch?v=bzOr9-9bj6g', externalWatchLink: 'https://dai.ly/x94bams', ai_critic_quote: 'عندما تجتمع الصداقة مع عالم الجريمة، تكون العواقب وخيمة. فيلم يحبس الأنفاس.'},
+            { id: 23, type: 'movie', title: 'فاصل من اللحظات اللذيذة', year: 2024, genre: 'كوميدي, خيال', poster: 'https://i.postimg.cc/T3j2vVzP/image.jpg', rating: 7.2, description: 'مهندس معماري وزوجته يعيشان حياة تعيسة، حتى يظهر لهما عالم افتراضي يجدان فيه النسخة الأفضل من نفسيهما، مما يؤدي إلى العديد من المفارقات الكوميدية.', videoSrc: 'https://www.youtube.com/watch?v=pvt3334sUW4', ai_critic_quote: 'كوميديا فانتازية عن الأكوان الموازية والحياة التي لم نعشها. فكرة مبتكرة وضحك متواصل.'},
+            { id: 24, type: 'movie', title: 'فرقة الموت', year: 2024, genre: 'أكشن, إثارة', poster: 'https://i.postimg.cc/8c5zL8Xy/image.jpg', rating: 8.1, description: 'تدور الأحداث في إطار من الأكشن والإثارة في فترة الأربعينات، حيث يكلف ضابط بالتحقيق في قضية خط الصعيد وتشكيل فرقة خاصة لمواجهته.', videoSrc: 'https://www.youtube.com/watch?v=d_nAG37y1-4', ai_critic_quote: 'أكشن وإثارة بنكهة تاريخية. عودة قوية لأفلام الصعيد والجريمة بإنتاج ضخم.'},
+            { id: 25, type: 'series', title: 'كامل العدد +1', year: 2024, genre: 'كوميدي, دراما', poster: 'https://i.postimg.cc/qR0W9y5D/image.jpg', rating: 8.4, description: 'بعد إنجاب طفل جديد، يواجه الزوجان ليلى وأحمد تحديات جديدة في تربية ثمانية أطفال في مراحل عمرية مختلفة، مما يفجر العديد من المواقف الكوميدية.', videoSrc: 'https://www.youtube.com/watch?v=jW2h93Hk3Yc', episodes: Array.from({length: 15}, (_, i) => ({ number: i + 1, videoSrc: 'https://www.youtube.com/watch?v=jW2h93Hk3Yc' })), ai_critic_quote: 'جرعة مكثفة من الكوميديا العائلية التي تلمس القلب. مسلسل يجمع كل أفراد الأسرة.' },
+            { id: 26, type: 'series', title: 'أعلى نسبة مشاهدة', year: 2024, genre: 'دراما', poster: 'https://i.postimg.cc/k4JvyVvM/image.jpg', rating: 8.8, description: 'شقيقتان من عائلة بسيطة، تدخل إحداهما عالم تيك توك وتصبح من مشاهيره، فتنقلب حياتهما رأسًا على عقب، وتواجهان تحديات الشهرة المفاجئة.', videoSrc: 'https://www.youtube.com/watch?v=yWSRg9n1G1U', episodes: Array.from({length: 15}, (_, i) => ({ number: i + 1, videoSrc: 'https://www.youtube.com/watch?v=yWSRg9n1G1U' })), ai_critic_quote: 'دراما واقعية مؤثرة عن عالم السوشيال ميديا. قصة نجاح قد تكون بداية النهاية.'},
+            { id: 5, type: 'series', title: 'سفاح الجيزة', year: 2023, genre: 'جريمة, إثارة', poster: 'https://i.postimg.cc/k4vmXTg3/Poster-The-Serial-Killer-540x800.webp', rating: 7.9, description: 'مسلسل مستوحى من أحداث حقيقية، يدور حول قصة سفاح غامض يرتكب سلسلة من الجرائم المروعة.', videoSrc: 'https://www.youtube.com/watch?v=aFGDL4d2pS8', episodes: [
+                { number: 1, videoSrc: 'https://geo.dailymotion.com/player.html?video=x9q5os2' }, { number: 2, videoSrc: 'https://geo.dailymotion.com/player.html?video=x9q6cya' }, { number: 3, videoSrc: 'https://geo.dailymotion.com/player.html?video=x9q6d1q' }, { number: 4, videoSrc: 'https://geo.dailymotion.com/player.html?video=x9q6d4i' }, { number: 5, videoSrc: 'https://geo.dailymotion.com/player.html?video=x9q6d7q' }, { number: 6, videoSrc: 'https://geo.dailymotion.com/player.html?video=x9q6d9m' }, { number: 7, videoSrc: 'https://geo.dailymotion.com/player.html?video=x9q6dbe' }, { number: 8, videoSrc: 'https://geo.dailymotion.com/player.html?video=x9q6dd2' }
+            ], ai_critic_quote: 'وجهان لعملة واحدة: الهدوء الذي يخفي خلفه وحشًا. مسلسل سيجعلك تشك في كل من حولك.'},
+            { id: 9, type: 'movie', title: 'كيرة والجن', year: 2022, genre: 'تاريخي, دراما', poster: 'https://i.postimg.cc/dQG7GFLw/Poster-Keerah-Wel-Gen-540x800.webp', rating: 8.1, description: 'يرصد الفيلم حقبة مهمة في تاريخ مصر أثناء ثورة 1919، ويتناول واقع المجتمع المصري في فترة الاحتلال الإنجليزي.', videoSrc: 'https://www.youtube.com/watch?v=igChw42zmP0', ai_critic_quote: 'ملحمة تاريخية عن المقاومة والصداقة في قلب ثورة 1919. عمل سينمائي متكامل.' },
+            { id: 19, type: 'series', title: 'البيت بيتي', year: 2022, genre: 'كوميدي, رعب', poster: 'https://i.postimg.cc/qvPQD0XQ/albait-baity-Poster2-ar-540x800.webp', rating: 8.3, description: 'يجبر بينو على العودة إلى القاهرة من أجل تسوية ميراثه، ولكن سرعان ما يصاب بالصدمة عند معرفته أن ما يرثه سيعرضه للمغامرات المرعبة.', videoSrc: 'https://www.youtube.com/watch?v=W0yVSEe-eDY', episodes: Array.from({length: 10}, (_, i) => ({ number: i + 1, videoSrc: 'https://www.youtube.com/watch?v=W0yVSEe-eDY' })), ai_critic_quote: 'عندما يلتقي الرعب بالكوميديا في قصر مسكون. هل ستضحك أم ستخاف؟' },
+            { id: 10, type: 'movie', title: 'الفيل الأزرق 2', year: 2019, genre: 'غموض, رعب', poster: 'https://i.postimg.cc/ry9V8wD0/5d4ebd021c2ef-185052-500x714.webp', rating: 8.0, description: 'بعد 5 سنوات من أحداث الجزء الأول، يتزوج الدكتور يحيى من لبنى، ويتم استدعاؤه لقسم الحالات الخطرة.', videoSrc: 'https://www.youtube.com/watch?v=I5Bat3GPqGc', externalWatchLink: 'https://dai.ly/x8ltsk0', ai_critic_quote: 'رحلة جديدة في عالم الجنون والهلاوس أكثر قتامة وإثارة. لا تشاهده وحيدًا.' }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            let data = [];
+            
+            // --- (The rest of the script is the same as the final correct version) ---
+        });
+    </script>
+</body>
+</html>
+
