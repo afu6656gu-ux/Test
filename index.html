@@ -6,11 +6,13 @@
     <title>عرب فليكس - مشاهدة وتحميل الأفلام والمسلسلات</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- HLS.js for Streaming -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts - Cairo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         /* Custom Styles */
@@ -81,7 +83,7 @@
             transition: opacity 0.3s ease-in-out;
         }
 
-        /* --- NEW: Aurora Hover Effect on Cards --- */
+        /* --- Aurora Hover Effect on Cards --- */
         .aurora-card {
             position: relative;
             overflow: hidden;
@@ -119,14 +121,14 @@
         <header class="bg-[#1e1e1e] sticky top-0 z-50 shadow-black/20 border-b border-[#2d2d2d]">
             <div class="container mx-auto px-4 py-3 flex justify-between items-center relative">
                 <!-- Logo and Nav -->
-                <div class="flex items-center gap-6">
+                <div class="flex items-center gap-3 sm:gap-6">
                     <a href="#" onclick="goHome(event)" class="cursor-pointer flex items-center gap-3 group">
-                         <div class="w-10 h-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                           <svg class="w-10 h-10 text-amber-500" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12,2A10,10 0 1,0 22,12A10,10 0 0,0 12,2M10,16.5V7.5L16,12L10,16.5Z" />
-                           </svg>
-                        </div>
-                        <h1 class="text-2xl font-bold text-amber-500 hidden sm:block">عرب فليكس</h1>
+                           <div class="w-10 h-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                              <svg class="w-10 h-10 text-amber-500" viewBox="0 0 24 24" fill="currentColor">
+                                     <path d="M12,2A10,10 0 1,0 22,12A10,10 0 0,0 12,2M10,16.5V7.5L16,12L10,16.5Z" />
+                              </svg>
+                          </div>
+                        <h1 class="text-xl sm:text-2xl font-bold text-amber-500">عرب فليكس</h1>
                     </a>
                     <nav class="hidden md:flex items-center gap-4">
                         <a href="#movies" onclick="smoothScrollTo('#movies', event)" class="text-gray-300 hover:text-amber-500 transition duration-300">أفلام</a>
@@ -140,17 +142,25 @@
                         <i class="fa fa-search text-gray-500"></i>
                         <input type="text" id="searchInput" placeholder="ابحث عن فيلم أو مسلسل..." class="bg-transparent focus:outline-none w-full text-slate-200 placeholder:text-gray-500">
                     </div>
+                     <!-- Surprise Me Button -->
+                    <button onclick="showRandomSuggestion()" class="hidden sm:flex items-center gap-2 bg-amber-500 text-black rounded-full px-4 py-1.5 hover:bg-amber-600 transition transform hover:scale-105" title="اقتراح عشوائي">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span class="hidden lg:block">فاجئني!</span>
+                    </button>
+                    <!-- User ID Display -->
+                    <div id="user-id-display" class="hidden md:block text-xs text-gray-400"></div>
                     <!-- Mobile Menu Button -->
                     <button id="mobile-menu-btn" class="md:hidden text-2xl text-gray-300">
                         <i class="fa fa-bars"></i>
                     </button>
                 </div>
-                 <!-- Mobile Menu -->
+                   <!-- Mobile Menu -->
                 <div id="mobile-menu" class="hidden md:hidden bg-[#1e1e1e] absolute top-full right-0 left-0 border-t border-[#2d2d2d]">
                     <nav class="flex flex-col p-4 gap-4">
                         <a href="#" onclick="goHome(event); closeMobileMenu();" class="text-gray-300 hover:text-amber-500 transition duration-300">الرئيسية</a>
                         <a href="#movies" onclick="smoothScrollTo('#movies', event); closeMobileMenu();" class="text-gray-300 hover:text-amber-500 transition duration-300">أفلام</a>
                         <a href="#series" onclick="smoothScrollTo('#series', event); closeMobileMenu();" class="text-gray-300 hover:text-amber-500 transition duration-300">مسلسلات</a>
+                        <a href="#" onclick="showRandomSuggestion(); closeMobileMenu();" class="text-gray-300 hover:text-amber-500 transition duration-300"><i class="fa-solid fa-wand-magic-sparkles ml-2"></i> فاجئني!</a>
                     </nav>
                 </div>
             </div>
@@ -176,7 +186,7 @@
                 <!-- Slider items will be injected here by JS -->
             </section>
 
-             <!-- Mood Selector Section -->
+              <!-- Mood Selector Section -->
             <section id="mood-selector" class="mb-10">
                 <h2 class="text-2xl font-bold border-r-4 border-amber-500 pr-4 mb-6">اختر حسب حالتك المزاجية</h2>
                 <div class="mood-selector flex flex-wrap gap-3">
@@ -195,14 +205,14 @@
                     <section id="movies" class="mb-10">
                         <h2 class="text-2xl font-bold border-r-4 border-amber-500 pr-4 mb-6">أحدث الأفلام</h2>
                         <div id="movies-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-6">
-                           <!-- Movie cards will be injected here by JS -->
+                            <!-- Movie cards will be injected here by JS -->
                         </div>
                     </section>
                     <!-- Series Section -->
                     <section id="series" class="mb-10">
                         <h2 class="text-2xl font-bold border-r-4 border-amber-500 pr-4 mb-6">أحدث المسلسلات</h2>
                         <div id="series-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-6">
-                           <!-- Series cards will be injected here by JS -->
+                            <!-- Series cards will be injected here by JS -->
                         </div>
                     </section>
                 </div>
@@ -251,22 +261,52 @@
         <p id="notification-message"></p>
     </div>
 
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, query, setDoc, doc, writeBatch, setLogLevel } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    <script>
-        // --- DATA WILL BE LOADED FROM LOCALSTORAGE ---
+        // Firebase global variables (provided by Canvas environment)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app;
+        let db;
+        let auth;
+        let userId = 'anonymous'; // Default to anonymous
+        let isAuthReady = false;
+        let hlsInstance = null; // To keep track of HLS instance
+
+        // --- DATA WILL BE LOADED FROM FIRESTORE ---
+        const SCRIPT_DATA_VERSION = '4.3'; // Updated movie info
         const initialData = [
-            { id: 1, type: 'movie', title: 'ولاد رزق 3: القاضية', year: 2024, genre: 'أكشن, جريمة', poster: 'https://i.postimg.cc/Lsph0Zc5/Welad-Rizk-3-El-Qadia.jpg', rating: 7.8, description: 'بعد مرور سنوات وانفصال الأخوة في طرقهم الحياتية المختلفة، يعود شبح من الماضي ليلقي بظلاله على ولاد رزق، مما يجبرهم على العودة إلى حياة الجريمة والسرقة مرة أخرى.', videoSrc: 'https://www.youtube.com/watch?v=8cawCGKqEi0', externalWatchLink: 'https://dai.ly/x9r3tmo', ai_critic_quote: 'عودة طال انتظارها بجرعة أكشن ومخاطر تصل إلى عنان السماء. هل تنجح الأسود في استعادة عرينها؟' },
-            { id: 17, type: 'movie', title: 'اللعب مع العيال', year: 2024, genre: 'كوميدي', poster: 'https://i.postimg.cc/wMrDtcwF/image.jpg', rating: 7.5, description: 'في إطار من الكوميديا، يُكلف معلم تاريخ بالتدريس في إحدى المدارس بمنطقة صحراوية، فيواجه العديد من العقبات التي لم تكن في الحسبان.', videoSrc: 'https://www.youtube.com/watch?v=nxOkDx65Otk', externalWatchLink: 'https://dai.ly/x9r2uck', ai_critic_quote: 'كوميديا من قلب الصحراء، حيث التاريخ والجغرافيا يلتقيان في مواقف لا تُنسى. ضحك مضمون!'},
-            { id: 18, type: 'movie', title: 'أهل الكهف', year: 2024, genre: 'أكشن, تاريخي', poster: 'https://i.postimg.cc/d1L2JxBD/x-Iiv-Uefce-D30w-Iy-ZAK1z55-SBv-TT-533x800.webp', rating: 7.9, description: 'في عام 250 ميلادية، يفر ثلاثة من المؤمنين من بطش الحاكم الروماني، ويلجأون إلى كهف مهجور، حيث ينامون لمدة 309 سنوات ثم يستيقظون في زمن آخر.', videoSrc: 'https://www.youtube.com/watch?v=3CRDpyAIkyI', externalWatchLink: 'https://dai.ly/x9egl2e', ai_critic_quote: 'أسطورة تتجسد على الشاشة. صراع بين الإيمان والطغيان في رحلة عبر الزمن.' },
-            { id: 21, type: 'movie', title: 'شقو', year: 2024, genre: 'أكشن, تشويق', poster: 'https://i.postimg.cc/nVmFN1Jk/images-1.jpg', rating: 7.6, description: 'مجموعة من الأصدقاء خارجون عن القانون يمارسون أعمالاً إجرامية مشبوهة، لكنها تقودهم إلى أزمات كبيرة وتحدث وراءها تبعات خطيرة.', videoSrc: 'https://www.youtube.com/watch?v=bzOr9-9bj6g', externalWatchLink: 'https://dai.ly/x94bams', ai_critic_quote: 'عندما تجتمع الصداقة مع عالم الجريمة، تكون العواقب وخيمة. فيلم يحبس الأنفاس.'},
+            { id: 1, type: 'movie', title: 'ولاد رزق 3: القاضية', year: 2024, genre: 'أكشن, جريمة', poster: 'https://i.postimg.cc/Lsph0Zc5/Welad-Rizk-3-El-Qadia.jpg', rating: 7.8, description: 'بعد مرور سنوات وانفصال الأخوة في طرقهم الحياتية المختلفة، يعود شبح من الماضي ليلقي بظلاله على ولاد رزق، مما يجبرهم على العودة إلى حياة الجريمة والسرقة مرة أخرى.', videoSrc: 'https://www.youtube.com/watch?v=8cawCGKqEi0', externalWatchLink: 'https://ddyops01h.dls4all.online/d/2aqpocnsfsrnuwfu2z6ijzhsvvp3lqy3egmjbnn2dwnrmxyf4532aak46rjvyj7lo7eqrpod/video.mp4', ai_critic_quote: 'عودة طال انتظارها بجرعة أكشن ومخاطر تصل إلى عنان السماء. هل تنجح الأسود في استعادة عرينها؟' },
+            { id: 23, type: 'movie', title: 'الحريفة', year: 2024, genre: 'دراما, رياضة', poster: 'https://i.postimg.cc/Px87g548/u-Nd-AFjr0gz-L4-Na-Jw1lpg-W5-On0-FM-533x800.webp', rating: 7.5, description: 'بعد أن تتسبب المشاكل في انتقاله من مدرسة خاصة إلى مدرسة حكومية، يكتشف ماجد موهبته في كرة القدم وينضم إلى فريق المدرسة على أمل الفوز بالبطولة.', videoSrc: 'https://www.youtube.com/watch?v=FLePppoP-34', externalWatchLink: 'https://fhd20a15.dls4all.online/d/2qqeinfsfsrnuwfu2v6i5p54w6nlig3cl3mud3nn73m5xig5damzvcgdyg4xxsnvksoxsgvl/video.mp4', ai_critic_quote: 'كرة القدم في الشارع المصري كما لم ترها من قبل. فيلم عن الأحلام والصداقة في مواجهة الصعاب.' },
+            { id: 17, type: 'movie', title: 'اللعب مع العيال', year: 2024, genre: 'كوميدي', poster: 'https://i.postimg.cc/wMrDtcwF/image.jpg', rating: 7.5, description: 'في إطار من الكوميديا، يُكلف معلم تاريخ بالتدريس في إحدى المدارس بمنطقة صحراوية، فيواجه العديد من العقبات التي لم تكن في الحسبان.', videoSrc: 'https://www.youtube.com/watch?v=nxOkDx65Otk', externalWatchLink: 'https://fhd20b1.dls4all.online/d/4aqann5tfsrnuwfu3n6nhzpr7gjsq7c6dluvx3c4e3z2fwtzsvgbe2sefe4ifmtcinaqmvnp/video.mp4', ai_critic_quote: 'كوميديا من قلب الصحراء، حيث التاريخ والجغرافيا يلتقيان في مواقف لا تُنسى. ضحك مضمون!'},
+            { id: 18, type: 'movie', title: 'أهل الكهف', year: 2024, genre: 'أكشن, تاريخي', poster: 'https://i.postimg.cc/d1L2JxBD/x-Iiv-Uefce-D30w-Iy-ZAK1z55-SBv-TT-533x800.webp', rating: 7.9, description: 'في عام 250 ميلادية، يفر ثلاثة من المؤمنين من بطش الحاكم الروماني، ويلجأون إلى كهف مهجور، حيث ينامون لمدة 309 سنوات ثم يستيقظون في زمن آخر.', videoSrc: 'https://www.youtube.com/watch?v=3CRDpyAIkyI', externalWatchLink: 'https://ddy35s65h.dls4all.online/d/3yqmt3ftfsrnuwfu3f6jh3xbuo5kmc2jtssit2kak4cfqaj7w6rxraf6pyp2laxpcn4n3bhe/video.mp4', ai_critic_quote: 'أسطورة تتجسد على الشاشة. صراع بين الإيمان والطغيان في رحلة عبر الزمن.' },
+            { id: 21, type: 'movie', title: 'شقو', year: 2024, genre: 'أكشن, تشويق', poster: 'https://i.postimg.cc/nVmFN1Jk/images-1.jpg', rating: 7.6, description: 'مجموعة من الأصدقاء خارجون عن القانون يمارسون أعمالاً إجرامية مشبوهة، لكنها تقودهم إلى أزمات كبيرة وتحدث وراءها تبعات خطيرة.', videoSrc: 'https://www.youtube.com/watch?v=bzOr9-9bj6g', externalWatchLink: 'https://fhd20b1.dls4all.online/d/4aqfdfvtfsrnuwfu3v6nf2hwuv5fm2gk6kn6afkwzjlja4uq4jgswdljbropubwbks7ybsir/video.mp4', ai_critic_quote: 'عندما تجتمع الصداقة مع عالم الجريمة، تكون العواقب وخيمة. فيلم يحبس الأنفاس.'},
+            { id: 30, type: 'movie', title: 'المشروع اكس', year: 2025, genre: 'كوميدي', poster: 'https://i.postimg.cc/R0Y3WzYM/anuo-OC2-JRa-Bq5-Ea-Wrf9-X48n-DE5-A-scaled-533x800.webp', rating: 7.2, description: 'مجموعة من الأصدقاء يقررون إقامة حفلة صاخبة، لكن الأمور تخرج عن السيطرة تمامًا وتتحول إلى فوضى عارمة.', videoSrc: 'https://www.youtube.com/watch?v=c_i2iha_4-I', externalWatchLink: 'https://fhd2k202.dls4all.online/d/7uqa3entfsrnuwfu3v6nh2phxyqgcmlsg2bkxkvemebzguh432xo3vg2j63dtrza4punbxy2/video.mp4', ai_critic_quote: 'حفلة واحدة كانت كفيلة بتغيير كل شيء. فيلم عن صداقة وجنون شبابي يصل إلى أقصى حدوده.'},
             { id: 22, type: 'series', title: 'أشغال شقة', year: 2024, genre: 'كوميدي', poster: 'https://i.postimg.cc/MTSwSCxm/scaled-600x800.webp', rating: 8.0, description: 'يُرزق طبيب شرعي وزوجته المذيعة بتوأم بعد فترة من عدم الإنجاب، ويقرران الاستعانة بمديرة منزل لرعاية الطفلين، ولكنهما يعانيان بشدة في رحلة البحث عن مساعدة مناسبة.', videoSrc: 'https://www.youtube.com/watch?v=wkeFEg0Tlwc', episodes: Array.from({length: 15}, (_, i) => ({ number: i + 1, videoSrc: 'https://www.youtube.com/watch?v=wkeFEg0Tlwc' })), ai_critic_quote: 'كوميديا عائلية من نوع آخر! مشاهدة الفوضى اليومية تتحول إلى فن مضحك.' },
+            { id: 26, type: 'series', title: 'بالطو', year: 2023, genre: 'كوميدي', poster: 'https://i.postimg.cc/vZfcZrmY/11675252737718-e1676444599414-625x800.webp', rating: 8.6, description: 'طبيب شاب حديث التخرج يُكلف بالعمل في وحدة صحية بقرية نائية، وهناك يجد نفسه فجأة مديرًا للوحدة ومسؤولاً عن كل شيء، مما يوقعه في مواقف كوميدية لا حصر لها.', videoSrc: 'https://www.youtube.com/watch?v=B1-2Aay0A24', episodes: Array.from({length: 10}, (_, i) => ({ number: i + 1, videoSrc: 'https://www.youtube.com/watch?v=B1-2Aay0A24' })), ai_critic_quote: 'جرعة من الكوميديا الواقعية من قلب الوحدات الصحية المصرية. مسلسل يجعلك تضحك على مآسي بطلها الطبيب الشاب.' },
             { id: 5, type: 'series', title: 'سفاح الجيزة', year: 2023, genre: 'جريمة, إثارة', poster: 'https://i.postimg.cc/k4vmXTg3/Poster-The-Serial-Killer-540x800.webp', rating: 7.9, description: 'مسلسل مستوحى من أحداث حقيقية، يدور حول قصة سفاح غامض يرتكب سلسلة من الجرائم المروعة.', videoSrc: 'https://www.youtube.com/watch?v=aFGDL4d2pS8', episodes: [
-                { number: 1, videoSrc: 'https://geo.dailymotion.com/player.html?video=x9q5os2' }, { number: 2, videoSrc: 'https://geo.dailymotion.com/player.html?video=x9q6cya' }, { number: 3, videoSrc: 'https://geo.dailymotion.com/player.html?video=x9q6d1q' }, { number: 4, videoSrc: 'https://geo.dailymotion.com/player.html?video=x9q6d4i' }, { number: 5, videoSrc: 'https://geo.dailymotion.com/player.html?video=x9q6d7q' }, { number: 6, videoSrc: 'https://geo.dailymotion.com/player.html?video=x9q6d9m' }, { number: 7, videoSrc: 'https://geo.dailymotion.com/player.html?video=x9q6dbe' }, { number: 8, videoSrc: 'https://geo.dailymotion.com/player.html?video=x9q6dd2' }
+                { number: 1, videoSrc: 'https://ddy35s65h.dls4all.online/d/3yqd5h5sfsrnuwfu5z6j5pnquyr2kbiuupht3fupgeykc55lemfhijgcenesjdva42j2vc5l/video.mp4' },
+                { number: 2, videoSrc: 'https://ddy35s62h.dls4all.online/d/yaqhlefsfsrnuwfu5z6jf75s7fge6lja4da7wr65yo52pqubqgkeyro7bflqkzgdijay5ss3/video.mp4' },
+                { number: 3, videoSrc: 'https://ddyops01h.dls4all.online/d/2aqelevsfsrnuwfu5z6i53hlxxncbrf2ltggddfhlxjb6pswcdkssovclclwuy5ob6d6wovl/video.mp4' },
+                { number: 4, videoSrc: 'https://ddy35s62h.dls4all.online/d/yaqejevsfsrnuwfu5z6jd4f47lv3c7jtb75dg7s3trdzkzr3xtk74p2yd6zt4xoasjfl726p/video.mp4' },
+                { number: 5, videoSrc: 'https://vsped-store2-fxa.cdnz.quest/hls2/01/00136/n2kpnhhxftme_n/index-v1-a1.m3u8?t=8xbdH8ggq6qwi9SotAu2WtS_jaDzgpvd1s8bl4204eg&s=1759020289&e=43200&v=172301&i=0.0&sp=0' },
+                { number: 6, videoSrc: 'https://ddy35s65h.dls4all.online/d/3yqp5hfsfsrnuwfu5z6ir7767q5yqzotbrdhjzj535qacz26qdqob6sp25s2gr55irym2krt/video.mp4' },
+                { number: 7, videoSrc: 'https://vsped-store2-fxa.cdnz.quest/hls2/02/00137/60knijeig5lq_l/index-v1-a1.m3u8?t=qshmYGy8SD1VCZ_4WRq7-J7szHXebCJaAbhYS2S-i3A&s=1759020492&e=43200&v=175575&i=0.0&sp=0' },
+                { number: 8, videoSrc: 'https://vsped-store2-fxa.cdnz.quest/hls2/02/00137/hm9xrvrddbzd_l/index-v1-a1.m3u8?t=4SIzg3qCJ4xU3q3N5lQbR8CrJQZpk65yF5oQQejW8Ko&s=1759020529&e=43200&v=176155&i=0.0&sp=0' }
             ], ai_critic_quote: 'وجهان لعملة واحدة: الهدوء الذي يخفي خلفه وحشًا. مسلسل سيجعلك تشك في كل من حولك.'},
-            { id: 20, type: 'series', title: 'جعفر العمدة', year: 2023, genre: 'دراما', poster: 'https://i.postimg.cc/ZnYh96W9/242751-PNG.webp', rating: 8.5, description: 'تدور الأحداث في إطار اجتماعي شعبي، حول جعفر العمدة الذي يتزوج بـ3 سيدات، ويمتلك شركات للمقاولات، ويدخل في العديد من الصراعات سواء في عمله أو بعيداً عن العمل.', videoSrc: 'https://www.youtube.com/watch?v=aGtjERO5k-E', episodes: Array.from({length: 30}, (_, i) => ({ number: i + 1, videoSrc: 'https://www.youtube.com/watch?v=aGtjERO5k-E' })), ai_critic_quote: 'دراما شعبية من العيار الثقيل عن السلطة والعائلة والأسرار المدفونة.' },
-            { id: 9, type: 'movie', title: 'كيرة والجن', year: 2022, genre: 'تاريخي, دراما', poster: 'https://i.postimg.cc/dQG7GFLw/Poster-Keerah-Wel-Gen-540x800.webp', rating: 8.1, description: 'يرصد الفيلم حقبة مهمة في تاريخ مصر أثناء ثورة 1919، ويتناول واقع المجتمع المصري في فترة الاحتلال الإنجليزي.', videoSrc: 'https://www.youtube.com/watch?v=igChw42zmP0', ai_critic_quote: 'ملحمة تاريخية عن المقاومة والصداقة في قلب ثورة 1919. عمل سينمائي متكامل.' },
-            { id: 19, type: 'series', title: 'البيت بيتي', year: 2022, genre: 'كوميدي, رعب', poster: 'https://i.postimg.cc/qvPQD0XQ/albait-baity-Poster2-ar-540x800.webp', rating: 8.3, description: 'يجبر بينو على العودة إلى القاهرة من أجل تسوية ميراثه، ولكن سرعان ما يصاب بالصدمة عند معرفته أن ما يرثه سيعرضه للمغامرات المرعبة.', videoSrc: 'https://www.youtube.com/watch?v=W0yVSEe-eDY', episodes: Array.from({length: 10}, (_, i) => ({ number: i + 1, videoSrc: 'https://www.youtube.com/watch?v=W0yVSEe-eDY' })), ai_critic_quote: 'عندما يلتقي الرعب بالكوميديا في قصر مسكون. هل ستضحك أم ستخاف؟' },
-            { id: 10, type: 'movie', title: 'الفيل الأزرق 2', year: 2019, genre: 'غموض, رعب', poster: 'https://i.postimg.cc/ry9V8wD0/5d4ebd021c2ef-185052-500x714.webp', rating: 8.0, description: 'بعد 5 سنوات من أحداث الجزء الأول، يتزوج الدكتور يحيى من لبنى، ويتم استدعاؤه لقسم الحالات الخطرة.', videoSrc: 'https://www.youtube.com/watch?v=I5Bat3GPqGc', externalWatchLink: 'https://dai.ly/x8ltsk0', ai_critic_quote: 'رحلة جديدة في عالم الجنون والهلاوس أكثر قتامة وإثارة. لا تشاهده وحيدًا.' }
+            { id: 27, type: 'movie', title: 'وش في وش', year: 2023, genre: 'كوميدي, دراما', poster: 'https://i.postimg.cc/rp2R1hHc/Wesh2-700x732.webp', rating: 7.7, description: 'تدور الأحداث داخل شقة زوجية، حيث يجتمع أفراد عائلتي الزوج والزوجة في شقة واحدة بالصدفة، وتحدث بينهم العديد من المشكلات بسبب الاختلافات الثقافية والاجتماعية.', videoSrc: 'https://www.youtube.com/watch?v=D-h55g535aA', externalWatchLink: 'https://ddy35s65h.dls4all.online/d/3yqgwmnsfsrnuwfu2v6nfzfqu5iofqlrsdtehgd5gsblfufxytaxepe23mtgcohgoggwpz2z/video.mp4', ai_critic_quote: 'كوميديا اجتماعية ذكية تحبس الجميع في شقة واحدة وتطلق العنان للفوضى. فيلم يعكس الواقع المصري بروح من الدعابة.'},
+            { id: 24, type: 'movie', title: 'فوي! فوي! فوي!', year: 2023, genre: 'كوميدي, دراما', poster: 'https://i.postimg.cc/wBRFvbmj/lz6mu2-Nz5-BICSf-LL0-Ih-Tcycfbc2-scaled_532x800.webp', rating: 8.2, description: 'حسن حارس أمن يعيش حياة فقيرة، ويحلم بالسفر إلى أوروبا. ينضم بالخداع إلى فريق كرة قدم للمكفوفين للمشاركة في كأس العالم في بولندا.', videoSrc: 'https://www.youtube.com/watch?v=s48L5tQ1L-g', externalWatchLink: 'https://fhd20a14.dls4all.online/d/2uqdkofsfsrnuwfu2v6jlopivnj342kp2mmoj2s5tvuzxqlrv7bbq6ewcptrz54c7hjo7t6l/video.mp4', ai_critic_quote: 'تحفة سينمائية تجمع بين الضحك والدموع، وتطرح أسئلة عميقة حول الأحلام والفرص المستحيلة.' },
+            { id: 28, type: 'series', title: 'على باب العمارة', year: 2023, genre: 'كوميدي, اجتماعي', poster: 'https://i.postimg.cc/wTt1S88q/2023-700x615.webp', rating: 7.9, description: 'شاب صعيدي ثري يهرب إلى القاهرة ويعمل كبواب عمارة هربًا من الثأر، وهناك يواجه العديد من المواقف الكوميدية مع سكان العمارة غريبي الأطوار.', videoSrc: 'https://www.youtube.com/watch?v=QfC_1E-iMVo', episodes: Array.from({length: 10}, (_, i) => ({ number: i + 1, videoSrc: 'https://www.youtube.com/watch?v=QfC_1E-iMVo' })), ai_critic_quote: 'كوميديا خفيفة عن صراع الثقافات بين سكان العمارة والبواب الجديد القادم من الصعيد. مسلسل ممتع.'},
+            { id: 9, type: 'movie', title: 'كيرة والجن', year: 2022, genre: 'تاريخي, دراما', poster: 'https://i.postimg.cc/dQG7GFLw/Poster-Keerah-Wel-Gen-540x800.webp', rating: 8.1, description: 'يرصد الفيلم حقبة مهمة في تاريخ مصر أثناء ثورة 1919، ويتناول واقع المجتمع المصري في فترة الاحتلال الإنجليزي.', videoSrc: 'https://www.youtube.com/watch?v=igChw42zmP0', externalWatchLink: 'https://ddyops01h.dls4all.online/d/2aqlhp5sfsrnuwfu556ihzvtvft2vygyghg77l7wgqlipscwtgmkogsrtwmo2etrsqxgqun5/video.mp4', ai_critic_quote: 'ملحمة تاريخية عن المقاومة والصداقة في قلب ثورة 1919. عمل سينمائي متكامل.' },
+            { id: 19, type: 'series', title: 'البيت بيتي', year: 2022, genre: 'كوميدي, رعب', poster: 'https://i.postimg.cc/qvPQD0XQ/albait-baity-Poster2_ar-540x800.webp', rating: 8.3, description: 'يجبر بينو على العودة إلى القاهرة من أجل تسوية ميراثه، ولكن سرعان ما يصاب بالصدمة عند معرفته أن ما يرثه سيعرضه للمغامرات المرعبة.', videoSrc: 'https://www.youtube.com/watch?v=W0yVSEe-eDY', episodes: Array.from({length: 10}, (_, i) => ({ number: i + 1, videoSrc: 'https://www.youtube.com/watch?v=W0yVSEe-eDY' })), ai_critic_quote: 'عندما يلتقي الرعب بالكوميديا في قصر مسكون. هل ستضحك أم ستخاف؟' },
+            { id: 29, type: 'movie', title: 'المطاريد', year: 2023, genre: 'كوميدي, رياضة', poster: 'https://i.postimg.cc/4dBKTXx6/324253377_712761033732696_249607374389194024_n_596x800.webp', rating: 6.5, description: 'يعود صلاح من أمريكا لبيع ممتلكات والده، لكنه يكتشف أنه ورث نادي كرة قدم، فيقرر تكوين فريق من أصدقائه القدامى لخوض مغامرة كوميدية.', videoSrc: 'https://www.youtube.com/watch?v=J_jKj-SAa-4', externalWatchLink: 'https://ddy35s65h.dls4all.online/d/3yqk5dfsfsrnuwfu2f6n577cxu3bpigf35z5wc2tnxrslw2jphmm2i2tnfpgldbpffuk5ttl/video.mp4', ai_critic_quote: 'عندما تجتمع الكوميديا مع شغف كرة القدم، تكون النتيجة فريقًا لا يُقهر... في إثارة الضحك!'},
+            { id: 10, type: 'movie', title: 'الفيل الأزرق', year: 2014, genre: 'غموض, رعب', poster: 'https://i.postimg.cc/ry9V8wD0/5d4ebd021c2ef-185052-500x714.webp', rating: 8.0, description: 'بعد 5 سنوات من العزلة الاختيارية، يُستدعى الدكتور النفسي (يحيى) للعمل في مستشفى العباسية، حيث يجد في انتظاره مفاجأة ستغير حياته.', videoSrc: 'https://www.youtube.com/watch?v=I5Bat3GPqGc', externalWatchLink: 'https://fhd20a14.dls4all.online/d/2uqdilvsfsrnuwfu2r6i5px6vzxizbjduchezhoxdm74ighky2fkmzikyqaiosnqz6ofn2y2/video.mp4', ai_critic_quote: 'رحلة في عالم الجنون والهلاوس أكثر قتامة وإثارة. لا تشاهده وحيدًا.' }
         ];
         
         let realData = [];
@@ -286,17 +326,100 @@
         const constructionBanner = document.getElementById('construction-banner');
         const closeBannerBtn = document.getElementById('close-banner-btn');
         const moodSelector = document.getElementById('mood-selector');
+        const userIdDisplay = document.getElementById('user-id-display');
+
         let notificationTimeout;
 
-        // --- DATA MANAGEMENT ---
-        function loadData() {
-             const storedData = localStorage.getItem('arabflexData');
-                if (storedData) {
-                    realData = JSON.parse(storedData);
+        // --- FIREBASE INITIALIZATION AND AUTH ---
+        if (Object.keys(firebaseConfig).length > 0) {
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+            setLogLevel('debug'); // Enable Firestore logging
+
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    isAuthReady = true;
+                    userIdDisplay.textContent = `مرحباً! ${userId.substring(0, 8)}...`;
+                    
+                    const lastSyncedVersion = localStorage.getItem('arabflexDataVersion');
+                    if (lastSyncedVersion !== SCRIPT_DATA_VERSION) {
+                        await syncDataWithFirestore();
+                    }
+                    setupOnSnapshotListener();
+
                 } else {
-                    realData = initialData;
-                    localStorage.setItem('arabflexData', JSON.stringify(initialData));
+                    try {
+                        if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    } catch (error) {
+                        console.error("Error during Firebase authentication:", error);
+                        showNotification('فشل تسجيل الدخول التلقائي.');
+                    }
                 }
+            });
+        } else {
+            console.error("Firebase config is missing. Falling back to initialData.");
+            realData = initialData; // Fallback if Firebase config is not provided
+            renderSlider();
+            renderContent(realData);
+            isAuthReady = true;
+        }
+
+        // --- DATA MANAGEMENT (Firestore) ---
+        async function syncDataWithFirestore() {
+            console.log(`Forcing data sync to version ${SCRIPT_DATA_VERSION}...`);
+            const contentCollectionRef = collection(db, `artifacts/${appId}/public/data/arabflexContent`);
+            const batch = writeBatch(db);
+            try {
+                initialData.forEach(item => {
+                    const docRef = doc(contentCollectionRef, String(item.id));
+                    const itemToSave = { ...item };
+                    if (itemToSave.episodes && Array.isArray(itemToSave.episodes)) {
+                        itemToSave.episodes = JSON.stringify(itemToSave.episodes);
+                    }
+                    batch.set(docRef, itemToSave);
+                });
+                
+                await batch.commit();
+                
+                console.log("Firestore sync complete.");
+                localStorage.setItem('arabflexDataVersion', SCRIPT_DATA_VERSION);
+            } catch (error) {
+                console.error("Error syncing data with Firestore:", error);
+                showNotification('حدث خطأ أثناء تحديث البيانات.');
+            }
+        }
+
+        function setupOnSnapshotListener() {
+            if (!db) return;
+            const contentCollectionRef = collection(db, `artifacts/${appId}/public/data/arabflexContent`);
+            onSnapshot(contentCollectionRef, (snapshot) => {
+                const fetchedData = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.episodes && typeof data.episodes === 'string') {
+                        try {
+                            data.episodes = JSON.parse(data.episodes);
+                        } catch(e) {
+                            console.error("Failed to parse episodes for item:", data.id, e);
+                            data.episodes = [];
+                        }
+                    }
+                    fetchedData.push(data);
+                });
+                realData = fetchedData;
+                renderSlider();
+                renderContent(realData);
+                console.log("Data loaded/updated from Firestore:", realData.length, "items");
+            }, (error) => {
+                console.error("Error fetching data from Firestore:", error);
+                showNotification('فشل تحميل المحتوى من قاعدة البيانات.');
+            });
         }
       
         // --- MOBILE MENU ---
@@ -304,7 +427,7 @@
             mobileMenu.classList.toggle('hidden');
         });
         
-        function closeMobileMenu() {
+        window.closeMobileMenu = function() {
             mobileMenu.classList.add('hidden');
         }
 
@@ -325,9 +448,9 @@
         let currentSlide = 0;
         
         function renderSlider() {
-            const sliderItems = [...realData].sort((a, b) => b.year - a.year).slice(0, 4);
+            const sliderItems = [...realData].sort((a, b) => b.year - a.year).slice(0, 5);
             if (sliderItems.length === 0) {
-                sliderContainer.innerHTML = `<div class="w-full h-full bg-dark-secondary flex items-center justify-center"><p>لا يوجد محتوى لعرضه. يرجى إضافة أفلام من لوحة التحكم.</p></div>`;
+                sliderContainer.innerHTML = `<div class="w-full h-full bg-dark-secondary flex items-center justify-center"><p>جاري تحميل المحتوى...</p></div>`;
                 return;
             };
             sliderContainer.innerHTML = sliderItems.map((item, index) => `
@@ -345,7 +468,7 @@
         }
 
         function nextSlide() {
-            const sliderItems = [...realData].sort((a, b) => b.year - a.year).slice(0, 4);
+            const sliderItems = [...realData].sort((a, b) => b.year - a.year).slice(0, 5);
             if (sliderItems.length === 0) return;
             currentSlide = (currentSlide + 1) % sliderItems.length;
             renderSlider();
@@ -358,14 +481,14 @@
                     <div class="relative rounded-lg overflow-hidden transform group-hover:-translate-y-2 transition-transform duration-300 shadow-lg bg-[#1e1e1e] border-transparent aurora-card">
                         <img src="${item.poster}" alt="${item.title}" class="w-full h-auto object-cover aspect-[2/3]" onerror="this.onerror=null;this.src='https://placehold.co/500x750/1e1e1e/f59e0b?text=Image+Not+Found';">
                         <div class="absolute inset-0 bg-black/70 flex flex-col justify-end p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-full group-hover:translate-y-0">
-                             <h3 class="font-semibold text-white truncate">${item.title}</h3>
-                             <div class="flex gap-2 mt-3">
-                                <button class="flex-1 bg-amber-500 text-black text-sm font-semibold py-1.5 px-3 rounded-md hover:bg-amber-600 transition duration-300">
-                                    <i class="fa fa-play"></i> مشاهدة
-                                </button>
-                                <button onclick="startDownload(event)" class="flex-1 bg-gray-700 text-white text-sm font-semibold py-1.5 px-3 rounded-md hover:bg-gray-600 transition duration-300">
-                                    <i class="fa fa-download"></i> تحميل
-                                </button>
+                               <h3 class="font-semibold text-white truncate">${item.title}</h3>
+                               <div class="flex gap-2 mt-3">
+                                 <button class="flex-1 bg-amber-500 text-black text-sm font-semibold py-1.5 px-3 rounded-md hover:bg-amber-600 transition duration-300">
+                                     <i class="fa fa-play"></i> مشاهدة
+                                 </button>
+                                 <button onclick="startDownload(event)" class="flex-1 bg-gray-700 text-white text-sm font-semibold py-1.5 px-3 rounded-md hover:bg-gray-600 transition duration-300">
+                                     <i class="fa fa-download"></i> تحميل
+                                 </button>
                             </div>
                         </div>
                         <div class="absolute top-2 left-2 bg-amber-500 text-black text-xs font-bold px-2 py-1 rounded-md">${item.rating} <i class="fa fa-star text-xs"></i></div>
@@ -398,36 +521,45 @@
             const sortedByRating = [...data].sort((a, b) => b.rating - a.rating);
             topRatedList.innerHTML = sortedByRating.slice(0, 5).map(createTopRatedItem).join('');
 
-            // Re-apply aurora effect to new cards
             applyAuroraEffect();
         }
 
-        function startDownload(event) {
+        window.startDownload = function(event) {
             event.preventDefault();
             event.stopPropagation();
             showNotification('جارٍ بدء التحميل...');
         }
         
         // --- NAVIGATION & PAGE LOGIC ---
-        function smoothScrollTo(selector, event) {
+        window.smoothScrollTo = function(selector, event) {
             event.preventDefault();
             document.querySelector(selector).scrollIntoView({
                 behavior: 'smooth'
             });
         }
 
-        function goHome(event) {
+        window.goHome = function(event) {
             if (event) event.preventDefault();
             if (!detailsPage.classList.contains('pointer-events-none')) {
                 hideDetails();
             }
-             if (!staticPage.classList.contains('pointer-events-none')) {
+              if (!staticPage.classList.contains('pointer-events-none')) {
                 hideStaticPage();
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
+        window.showRandomSuggestion = function() {
+            if (realData.length > 0) {
+                const randomIndex = Math.floor(Math.random() * realData.length);
+                const randomItem = realData[randomIndex];
+                showDetails(randomItem.id);
+            } else {
+                showNotification("لا يوجد محتوى للاقتراح حاليًا.");
+            }
+        }
         
-        function showDetails(id) {
+        window.showDetails = function(id) {
             const item = realData.find(i => i.id === id);
             if (!item) return;
             
@@ -449,7 +581,7 @@
                             <button onclick="playVideo('${item.videoSrc}')" class="bg-white/10 py-2 px-5 rounded-lg hover:bg-amber-500 hover:text-black transition transform hover:scale-105 backdrop-blur-sm"><i class="fa-solid fa-clapperboard ml-2"></i>مشاهدة الإعلان</button>
                         </div>
                     </div>
-                     <div class="mt-8">
+                       <div class="mt-8">
                         <h3 class="text-2xl font-semibold border-r-4 border-amber-500 pr-4 mb-4">الحلقات</h3>
                         <div class="episode-list grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2 max-h-60 overflow-y-auto pr-2">
                             ${item.episodes.map(ep => `
@@ -525,37 +657,70 @@
             return m ? m[m.length - 1] : null;
         }
 
-        function playVideo(src) {
+        window.playVideo = function(src) {
             const playerWrapper = document.getElementById('player-wrapper');
             if (!playerWrapper) return;
-            
-            let playerHtml = '';
+
+            // Destroy previous HLS instance if it exists
+            if (hlsInstance) {
+                hlsInstance.destroy();
+                hlsInstance = null;
+            }
+
+            playerWrapper.innerHTML = ''; // Clear previous content
+            playerWrapper.classList.remove('aspect-video');
             
             const youtubeId = getYouTubeID(src);
             const dailymotionId = getDailymotionID(src);
 
-            playerWrapper.classList.remove('aspect-video'); 
-
             if (youtubeId) {
                 playerWrapper.classList.add('aspect-video');
-                playerHtml = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${youtubeId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>`;
+                playerWrapper.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${youtubeId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>`;
             } else if (dailymotionId) {
-                 playerHtml = `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;">
+                playerWrapper.classList.add('aspect-video');
+                playerWrapper.innerHTML = `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;">
                     <iframe src="https://geo.dailymotion.com/player.html?video=${dailymotionId}&autoplay=1"
                     style="width:100%; height:100%; position:absolute; left:0px; top:0px; overflow:hidden; border:none;"
                     allow="autoplay; fullscreen; web-share" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true">
                     </iframe></div>`;
-            } else {
-                 playerWrapper.classList.add('aspect-video');
-                 playerHtml = `<video id="video-player" class="w-full h-full" controls autoplay allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"><source src="${src}" type="video/mp4">Your browser does not support the video tag.</video>`;
+            } else if (src.includes('.m3u8')) {
+                playerWrapper.classList.add('aspect-video');
+                const video = document.createElement('video');
+                video.id = 'video-player';
+                video.className = 'w-full h-full';
+                video.controls = true;
+                video.autoplay = true;
+                video.setAttribute('playsinline', ''); // Add playsinline for iOS fullscreen
+                playerWrapper.appendChild(video);
+
+                if (Hls.isSupported()) {
+                    hlsInstance = new Hls();
+                    hlsInstance.loadSource(src);
+                    hlsInstance.attachMedia(video);
+                    hlsInstance.on(Hls.Events.MANIFEST_PARSED, function() {
+                        video.play();
+                    });
+                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    video.src = src;
+                    video.addEventListener('loadedmetadata', function() {
+                        video.play();
+                    });
+                }
+            } else { // MP4 or other direct video
+                playerWrapper.classList.add('aspect-video');
+                playerWrapper.innerHTML = `<video id="video-player" class="w-full h-full" controls autoplay allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"><source src="${src}" type="video/mp4">Your browser does not support the video tag.</video>`;
             }
 
-            playerWrapper.innerHTML = playerHtml;
             playerWrapper.classList.remove('hidden');
             playerWrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
-        function hideDetails() {
+        window.hideDetails = function() {
+            // Destroy HLS instance on closing details page
+            if (hlsInstance) {
+                hlsInstance.destroy();
+                hlsInstance = null;
+            }
             detailsPage.classList.add('opacity-0');
             setTimeout(() => {
                 detailsPage.classList.add('pointer-events-none', 'hidden');
@@ -563,6 +728,9 @@
                 if (playerWrapper) {
                     playerWrapper.innerHTML = '';
                     playerWrapper.classList.add('hidden');
+                }
+                 if (document.fullscreenElement) {
+                    document.exitFullscreen();
                 }
             }, 300);
             document.body.style.overflow = '';
@@ -584,7 +752,7 @@
             }
         };
 
-        function showStaticPage(pageKey, event) {
+        window.showStaticPage = function(pageKey, event) {
             event.preventDefault();
             const pageData = staticContent[pageKey];
             if (!pageData) return;
@@ -607,7 +775,7 @@
             }, 10);
         }
 
-        function hideStaticPage() {
+        window.hideStaticPage = function() {
             const contentBox = document.getElementById('static-content-box');
             if (contentBox) {
                 contentBox.classList.add('scale-95', 'opacity-0');
@@ -662,7 +830,6 @@
 
         // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
-            loadData();
             // Construction Banner Logic
             if (localStorage.getItem('arabflexBannerClosed') === 'true') {
                 constructionBanner.classList.add('hidden');
@@ -671,10 +838,6 @@
                 constructionBanner.classList.add('hidden');
                 localStorage.setItem('arabflexBannerClosed', 'true');
             });
-
-            renderSlider();
-            renderContent(realData);
-            setInterval(nextSlide, 5000); 
 
             // Slider click event listener
             sliderContainer.addEventListener('click', (event) => {
@@ -686,14 +849,8 @@
                     }
                 }
             });
-
-            window.addEventListener('storage', (event) => {
-                if (event.key === 'arabflexData') {
-                    loadData();
-                    renderSlider();
-                    renderContent(realData);
-                }
-            });
+            // Start the slider interval only after initial data is loaded
+            setInterval(nextSlide, 5000);
         });
 
     </script>
