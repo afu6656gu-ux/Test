@@ -3,7 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
-    <title>عرب فليكس - تصميم ثابت ومستقر</title>
+    <title>عرب فليكس - تصميم بسلايدر مصغر</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -61,7 +61,7 @@
         }
 
         .section-title {
-            text-align: right; font-size: 1.875rem; font-weight: 900;
+            text-align: right; font-size: 1.75rem; font-weight: 900;
             margin-bottom: 2rem; position: relative; padding-right: 1.25rem;
         }
         .section-title::before {
@@ -72,17 +72,12 @@
             border-radius: 3px;
         }
 
-        .page-transition { transition: opacity 0.5s ease, transform 0.5s ease; }
-        .page-hidden { display: none; }
-        .modal { transition: opacity 0.3s ease, visibility 0.3s ease; }
-        .modal-content { transition: transform 0.3s ease; }
-        .dropdown:hover .dropdown-menu { display: block; }
-        
-        /* --- Cinematic Slider --- */
+        /* --- New, Compact Cinematic Slider --- */
         #hero-section {
             position: relative;
-            height: 60vh;
-            min-height: 450px;
+            height: 45vh; /* Reduced height */
+            min-height: 300px; /* Minimum height for small devices */
+            max-height: 380px; /* Maximum height for large devices */
             overflow: hidden;
         }
         .slider-item {
@@ -90,6 +85,7 @@
             inset: 0;
             opacity: 0;
             transition: opacity 1.2s ease-in-out;
+            cursor: pointer;
         }
         .slider-item.active {
             opacity: 1;
@@ -110,34 +106,35 @@
             height: 100%;
             display: flex;
             align-items: center;
-            padding: 1rem 2rem;
+            padding: 1rem 1.5rem;
             animation: fadeIn 1.2s ease-out forwards;
         }
         .slider-poster {
-            width: 150px;
-            height: 225px;
+            width: 100px; /* Smaller poster */
+            height: 150px;
             object-fit: cover;
             border-radius: 0.5rem;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            flex-shrink: 0;
         }
          @media (min-width: 768px) {
             .slider-poster {
-                width: 180px;
-                height: 270px;
+                width: 140px; /* Slightly larger on desktop */
+                height: 210px;
             }
         }
         .slider-dots {
             position: absolute;
-            bottom: 1.5rem;
+            bottom: 1rem;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 0.75rem;
+            gap: 0.5rem;
             z-index: 20;
         }
         .slider-dot {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background-color: rgba(255, 255, 255, 0.4);
             transition: all 0.3s ease;
@@ -147,12 +144,15 @@
             background-color: var(--brand-gold);
             transform: scale(1.2);
         }
+        
+        .dropdown:hover .dropdown-menu { display: block; }
+        .page-hidden { display: none; }
     </style>
 </head>
 <body class="antialiased">
 
     <!-- Header -->
-    <header class="bg-black/70 backdrop-blur-lg shadow-lg sticky top-0 z-40 border-b border-[var(--border-color)]">
+    <header class="bg-black/80 backdrop-blur-lg shadow-lg sticky top-0 z-40 border-b border-[var(--border-color)]">
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
                 <a href="#" onclick="showHomePage(); return false;" class="flex items-center gap-3">
@@ -162,46 +162,52 @@
                 </a>
                 
                 <div class="hidden md:flex items-center space-x-reverse space-x-8 text-base font-bold">
-                    <a href="#" onclick="showHomePage(); return false;" class="golden-text">الرئيسية</a>
-                    <a href="#movies-section" class="text-gray-300 hover:golden-text transition-colors">أفلام</a>
-                    <a href="#series-section" class="text-gray-300 hover:golden-text transition-colors">مسلسلات</a>
+                    <a href="#" onclick="scrollToSection('home-page'); return false;" class="golden-text">الرئيسية</a>
+                    <a href="#" onclick="scrollToSection('movies-section'); return false;" class="text-gray-300 hover:golden-text transition-colors">أفلام</a>
+                    <a href="#" onclick="scrollToSection('series-section'); return false;" class="text-gray-300 hover:golden-text transition-colors">مسلسلات</a>
                     <div class="relative dropdown">
                         <button class="text-gray-300 hover:golden-text transition-colors flex items-center gap-1">
                             تصنيفات <i class="fas fa-chevron-down text-xs"></i>
                         </button>
                         <div class="dropdown-menu absolute hidden bg-[var(--background-light)] border border-[var(--border-color)] rounded-md mt-2 py-2 w-40 shadow-xl">
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-[var(--border-color)] hover:golden-text">أكشن</a>
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-[var(--border-color)] hover:golden-text">كوميدي</a>
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-[var(--border-color)] hover:golden-text">دراما</a>
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-[var(--border-color)] hover:golden-text">رعب</a>
+                            <a href="#" onclick="scrollToSection('action-movies-section'); return false;" class="block px-4 py-2 text-sm text-gray-300 hover:bg-[var(--border-color)] hover:golden-text">أكشن</a>
+                            <a href="#" onclick="scrollToSection('comedy-movies-section'); return false;" class="block px-4 py-2 text-sm text-gray-300 hover:bg-[var(--border-color)] hover:golden-text">كوميدي</a>
                         </div>
                     </div>
                 </div>
                 
-                <div class="relative">
-                    <input id="search-bar" type="text" placeholder="ابحث..." class="bg-gray-800 border border-gray-700 text-white rounded-full py-2 pr-10 pl-4 focus:outline-none focus:ring-2 focus:ring-[var(--brand-gold)] w-32 sm:w-40 md:w-56 transition-all duration-300">
-                    <i class="fas fa-search absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <input id="search-bar" type="text" placeholder="ابحث..." class="bg-gray-800 border border-gray-700 text-white rounded-full py-2 pr-10 pl-4 focus:outline-none focus:ring-2 focus:ring-[var(--brand-gold)] w-32 sm:w-40 md:w-56 transition-all duration-300">
+                        <i class="fas fa-search absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                    <!-- Hamburger Menu Button -->
+                    <button id="menu-btn" class="md:hidden text-2xl text-white focus:outline-none">
+                        <i class="fas fa-bars"></i>
+                    </button>
                 </div>
             </div>
         </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-black/90 backdrop-blur-sm absolute top-20 right-0 left-0">
+            <div class="flex flex-col items-center space-y-4 py-6 font-bold">
+                 <a href="#" onclick="scrollToSection('home-page'); toggleMenu(); return false;" class="golden-text">الرئيسية</a>
+                 <a href="#" onclick="scrollToSection('movies-section'); toggleMenu(); return false;" class="text-gray-300 hover:golden-text transition-colors">أفلام</a>
+                 <a href="#" onclick="scrollToSection('series-section'); toggleMenu(); return false;" class="text-gray-300 hover:golden-text transition-colors">مسلسلات</a>
+                 <a href="#" onclick="scrollToSection('action-movies-section'); toggleMenu(); return false;" class="text-gray-300 hover:golden-text transition-colors">أكشن</a>
+                 <a href="#" onclick="scrollToSection('comedy-movies-section'); toggleMenu(); return false;" class="text-gray-300 hover:golden-text transition-colors">كوميدي</a>
+            </div>
+        </div>
     </header>
-
-    <!-- Experimental Notice -->
-    <div class="bg-gradient-to-r from-gray-900 to-black border-b-2 border-[var(--brand-gold)] text-center py-2 px-4 text-white font-bold flex items-center justify-center gap-3 text-sm sm:text-base">
-        <i class="fas fa-tools text-[var(--brand-gold)] animate-pulse" style="animation: pulse 2s infinite;"></i>
-        <span>تنويه: هذا الموقع تجريبي وتحت التطوير حالياً.</span>
-    </div>
 
     <!-- Main Content -->
     <main id="main-content-wrapper" class="relative">
-        <div id="home-page" class="page-transition">
+        <div id="home-page">
             <section id="hero-section">
-                <div id="slider-container">
-                    <!-- Slider items will be injected here -->
-                </div>
+                <div id="slider-container"></div>
                 <div id="slider-dots" class="slider-dots"></div>
-                <button id="prev-slide" class="absolute top-1/2 -translate-y-1/2 left-4 bg-black/40 w-10 h-10 sm:w-12 sm:h-12 rounded-full hover:bg-black/70 transition-colors z-20 grid place-items-center"><i class="fas fa-chevron-left"></i></button>
-                <button id="next-slide" class="absolute top-1/2 -translate-y-1/2 right-4 bg-black/40 w-10 h-10 sm:w-12 sm:h-12 rounded-full hover:bg-black/70 transition-colors z-20 grid place-items-center"><i class="fas fa-chevron-right"></i></button>
+                <button id="prev-slide" class="absolute top-1/2 -translate-y-1/2 left-4 bg-black/40 w-10 h-10 sm:w-12 sm:h-12 rounded-full hover:bg-black/70 transition-colors z-20 hidden sm:grid place-items-center"><i class="fas fa-chevron-left"></i></button>
+                <button id="next-slide" class="absolute top-1/2 -translate-y-1/2 right-4 bg-black/40 w-10 h-10 sm:w-12 sm:h-12 rounded-full hover:bg-black/70 transition-colors z-20 hidden sm:grid place-items-center"><i class="fas fa-chevron-right"></i></button>
             </section>
             
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -233,12 +239,12 @@
                 </div>
             </div>
         </div>
-        <div id="details-page" class="page-transition page-hidden"></div>
+        <div id="details-page" class="page-hidden"></div>
     </main>
-
-    <!-- Footer -->
+    
+    <!-- Footer, Modals, etc. -->
     <footer class="bg-black border-t border-[var(--border-color)] mt-8">
-        <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-gray-400">
+         <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-gray-400">
              <a href="#" onclick="showHomePage(); return false;" class="flex items-center justify-center gap-3 mb-4">
                 <span class="font-black text-3xl tracking-wider"><span class="golden-text">عرب</span> <span class="text-white">فليكس</span></span>
             </a>
@@ -250,12 +256,10 @@
             <p class="text-sm">&copy; 2025 عرب فليكس. جميع الحقوق محفوظة.</p>
         </div>
     </footer>
-
-    <!-- Modals -->
-    <div id="video-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 transition-opacity duration-300 invisible opacity-0 modal"><div class="bg-gray-900 rounded-lg shadow-xl w-11/12 max-w-4xl relative transform transition-transform scale-95 modal-content"><div class="flex justify-between items-center p-4 border-b border-gray-700"><h3 id="video-modal-title" class="text-xl font-bold text-white"></h3><button onclick="closeWatchModal()" class="text-gray-400 hover:text-white text-2xl focus:outline-none">&times;</button></div><div class="p-1 bg-black"><div class="aspect-video"><video id="video-player" class="w-full h-full" controls autoplay></video></div></div></div></div>
-    <div id="contact-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 invisible opacity-0 modal"><div class="bg-[var(--background-light)] rounded-lg shadow-xl w-11/12 max-w-lg p-6 relative modal-content transform scale-95 border border-[var(--border-color)]"><button onclick="closeModal('contact-modal')" class="absolute top-4 left-4 text-gray-400 hover:text-white text-2xl">&times;</button><h2 class="text-2xl font-bold mb-4 golden-text">اتصل بنا</h2><p>للتواصل: <a href="mailto:arabfleex@gmail.com" class="text-lg font-bold text-amber-400 hover:underline">arabfleex@gmail.com</a></p></div></div>
-    <div id="policy-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 invisible opacity-0 modal"><div class="bg-[var(--background-light)] rounded-lg shadow-xl w-11/12 max-w-lg p-6 relative modal-content transform scale-95 border border-[var(--border-color)]"><button onclick="closeModal('policy-modal')" class="absolute top-4 left-4 text-gray-400 hover:text-white text-2xl">&times;</button><h2 class="text-2xl font-bold mb-4 golden-text">سياسة الاستخدام</h2><p class="text-sm">هذا الموقع تجريبي للعرض فقط. جميع المواد ملك لأصحابها ولا نستضيف أي ملفات على خوادمنا.</p></div></div>
-    <div id="faq-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 invisible opacity-0 modal"><div class="bg-[var(--background-light)] rounded-lg shadow-xl w-11/12 max-w-lg p-6 relative modal-content transform scale-95 border border-[var(--border-color)]"><button onclick="closeModal('faq-modal')" class="absolute top-4 left-4 text-gray-400 hover:text-white text-2xl">&times;</button><h2 class="text-2xl font-bold mb-4 golden-text">الأسئلة الشائعة</h2><p><strong>هل الموقع مجاني؟</strong><br>نعم، الموقع تجريبي ومجاني بالكامل.</p><p class="mt-4"><strong>هل أحتاج إلى تسجيل؟</strong><br>لا، لا يلزم التسجيل للمشاهدة.</p></div></div>
+    <div id="video-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 transition-opacity duration-300 invisible opacity-0"><div class="bg-gray-900 rounded-lg shadow-xl w-11/12 max-w-4xl relative transform transition-transform scale-95"><div class="flex justify-between items-center p-4 border-b border-gray-700"><h3 id="video-modal-title" class="text-xl font-bold text-white"></h3><button onclick="closeWatchModal()" class="text-gray-400 hover:text-white text-2xl focus:outline-none">&times;</button></div><div class="p-1 bg-black"><div class="aspect-video"><video id="video-player" class="w-full h-full" controls autoplay></video></div></div></div></div>
+    <div id="contact-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 invisible opacity-0"><div class="bg-[var(--background-light)] rounded-lg shadow-xl w-11/12 max-w-lg p-6 relative transform scale-95 border border-[var(--border-color)]"><button onclick="closeModal('contact-modal')" class="absolute top-4 left-4 text-gray-400 hover:text-white text-2xl">&times;</button><h2 class="text-2xl font-bold mb-4 golden-text">اتصل بنا</h2><p>للتواصل: <a href="mailto:arabfleex@gmail.com" class="text-lg font-bold text-amber-400 hover:underline">arabfleex@gmail.com</a></p></div></div>
+    <div id="policy-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 invisible opacity-0"><div class="bg-[var(--background-light)] rounded-lg shadow-xl w-11/12 max-w-lg p-6 relative transform scale-95 border border-[var(--border-color)]"><button onclick="closeModal('policy-modal')" class="absolute top-4 left-4 text-gray-400 hover:text-white text-2xl">&times;</button><h2 class="text-2xl font-bold mb-4 golden-text">سياسة الاستخدام</h2><p class="text-sm">هذا الموقع تجريبي للعرض فقط. جميع المواد ملك لأصحابها ولا نستضيف أي ملفات على خوادمنا.</p></div></div>
+    <div id="faq-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 invisible opacity-0"><div class="bg-[var(--background-light)] rounded-lg shadow-xl w-11/12 max-w-lg p-6 relative transform scale-95 border border-[var(--border-color)]"><button onclick="closeModal('faq-modal')" class="absolute top-4 left-4 text-gray-400 hover:text-white text-2xl">&times;</button><h2 class="text-2xl font-bold mb-4 golden-text">الأسئلة الشائعة</h2><p><strong>هل الموقع مجاني؟</strong><br>نعم، الموقع تجريبي ومجاني بالكامل.</p><p class="mt-4"><strong>هل أحتاج إلى تسجيل؟</strong><br>لا، لا يلزم التسجيل للمشاهدة.</p></div></div>
 
     <script>
         const db = {
@@ -278,45 +282,33 @@
             ]
         };
 
+        // --- GLOBAL STATE ---
         let hls;
-        const homePage = document.getElementById('home-page');
-        const detailsPage = document.getElementById('details-page');
+        let homePage, detailsPage, mobileMenu;
 
-
-        function createCard(item, type, delay) {
-            return `<div class="card-container group" style="animation-delay: ${delay}ms" onclick="showDetailsPage('${item.id}', '${type}')">
-                <div class="card-image-wrapper">
-                    <img src="${item.poster}" alt="${item.title}" class="w-full aspect-[2/3] object-cover">
-                    <div class="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors"></div>
-                    <i class="card-play-icon fa-regular fa-circle-play"></i>
-                    <div class="absolute top-2 right-2 bg-black/60 text-amber-400 text-xs font-bold px-2 py-1 rounded-full backdrop-blur-sm flex items-center gap-1">
-                        <i class="fas fa-star text-xs"></i> ${item.rating}
-                    </div>
-                </div>
-                <div class="pt-3 text-center">
-                    <h3 class="font-bold text-sm sm:text-base text-white truncate group-hover:golden-text transition-colors">${item.title}</h3>
-                    <p class="text-xs text-gray-400">${item.year} - ${item.genre}</p>
-                </div>
-            </div>`;
+        // --- GLOBAL FUNCTIONS (for inline onclick) ---
+        function showHomePage() {
+            if (detailsPage && homePage) {
+                detailsPage.classList.add('page-hidden');
+                homePage.classList.remove('page-hidden');
+                window.scrollTo(0, 0);
+            }
         }
 
-        function renderHomePage() {
-            document.getElementById('movies-grid').innerHTML = db.movies.map((m, i) => createCard(m, 'movies', i * 50)).join('');
-            document.getElementById('series-grid').innerHTML = db.series.map((s, i) => createCard(s, 'series', i * 50)).join('');
-            const actionMovies = db.movies.filter(m => m.genre.includes('أكشن') || m.genre.includes('جريمة'));
-            document.getElementById('action-movies-grid').innerHTML = actionMovies.map((m, i) => createCard(m, 'movies', i * 50)).join('');
-            const comedyMovies = db.movies.filter(m => m.genre.includes('كوميدي'));
-            document.getElementById('comedy-movies-grid').innerHTML = comedyMovies.map((m, i) => createCard(m, 'movies', i * 50)).join('');
-            const topRated = [...db.movies, ...db.series].sort((a, b) => b.rating - a.rating).slice(0, 5);
-            document.getElementById('top-rated-list').innerHTML = topRated.map(item => {
-                const type = db.movies.includes(item) ? 'movies' : 'series';
-                return `<div class="flex items-center space-x-reverse space-x-3 cursor-pointer group py-3" onclick="showDetailsPage('${item.id}', '${type}')">
-                    <img src="${item.poster}" class="w-12 h-20 object-cover rounded-md flex-shrink-0" alt="${item.title}">
-                    <div><h4 class="font-bold text-sm group-hover:golden-text transition-colors">${item.title}</h4><p class="text-xs text-gray-400">${item.genre}</p><p class="text-xs font-bold text-amber-400"><i class="fas fa-star text-xs"></i> ${item.rating}</p></div>
-                </div>`;
-            }).join('');
+        function toggleMenu() {
+            if (mobileMenu) mobileMenu.classList.toggle('hidden');
         }
         
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if(section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+            if(mobileMenu && !mobileMenu.classList.contains('hidden')){
+                toggleMenu();
+            }
+        }
+
         function showDetailsPage(id, type) {
             const content = db[type].find(item => item.id === id);
             if (!content) return;
@@ -345,107 +337,194 @@
             detailsPage.classList.remove('page-hidden');
             window.scrollTo(0, 0);
         }
-        function showHomePage() {
-            detailsPage.classList.add('page-hidden');
-            homePage.classList.remove('page-hidden');
-            window.scrollTo(0, 0);
+        
+        function openModal(id) { 
+            const m = document.getElementById(id);
+            if (m) {
+                m.classList.remove('invisible','opacity-0'); 
+                setTimeout(()=>m.querySelector('.modal-content')?.classList.remove('scale-95'),10);
+            }
         }
-
-        function openModal(id) { const m=document.getElementById(id); m.classList.remove('invisible','opacity-0'); setTimeout(()=>m.querySelector('.modal-content').classList.remove('scale-95'),10); }
-        function closeModal(id) { const m=document.getElementById(id); m.querySelector('.modal-content').classList.add('scale-95'); m.classList.add('opacity-0'); setTimeout(()=>m.classList.add('invisible'),300); }
+        function closeModal(id) { 
+            const m = document.getElementById(id);
+            if (m) {
+                m.querySelector('.modal-content')?.classList.add('scale-95');
+                m.classList.add('opacity-0');
+                setTimeout(()=>m.classList.add('invisible'),300);
+            }
+        }
         function openWatchModal(url, title) {
             if (!url || url === '#') return;
             const video = document.getElementById('video-player');
-            document.getElementById('video-modal-title').innerText = `مشاهدة: ${title}`;
+            const modalTitle = document.getElementById('video-modal-title');
+            if(modalTitle) modalTitle.innerText = `مشاهدة: ${title}`;
             if (hls) hls.destroy();
             if (Hls.isSupported() && url.includes('.m3u8')) {
                 hls = new Hls(); hls.loadSource(url); hls.attachMedia(video);
-            } else { video.src = url; }
+            } else if (video) { video.src = url; }
             openModal('video-modal');
         }
         function closeWatchModal() {
             const video = document.getElementById('video-player');
-            video.pause(); video.src = '';
+            if (video) { video.pause(); video.src = ''; }
             if (hls) { hls.destroy(); hls = null; }
             closeModal('video-modal');
         }
 
-        // --- CINEMATIC SLIDER LOGIC ---
-        let sliderInterval;
-        let currentSlide = 0;
-        const sliderContainer = document.getElementById('slider-container');
-        const sliderDotsContainer = document.getElementById('slider-dots');
-        const sliderContent = [...db.movies].sort((a,b) => b.year - a.year);
+        // --- APP INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Assign global element variables
+            homePage = document.getElementById('home-page');
+            detailsPage = document.getElementById('details-page');
+            mobileMenu = document.getElementById('mobile-menu');
 
-        function renderSlider() {
-            sliderContainer.innerHTML = sliderContent.map((item, index) => {
-                const type = 'movies';
-                return `<div class="slider-item" data-index="${index}">
-                    <img src="${item.poster}" class="slider-bg">
-                    <div class="slider-content container mx-auto">
-                        <div class="flex items-center gap-6 sm:gap-10">
-                            <img src="${item.poster}" class="slider-poster hidden sm:block">
-                            <div class="text-right">
-                                <h2 class="text-3xl sm:text-4xl md:text-5xl font-black mb-4">${item.title}</h2>
-                                <p class="text-base sm:text-lg text-gray-200 mb-6 hidden md:block max-w-lg">${item.description.substring(0, 120)}...</p>
-                                <button onclick="showDetailsPage('${item.id}', '${type}')" class="bg-[var(--brand-gold)] text-black font-bold py-2 px-6 sm:py-3 sm:px-8 rounded-full text-sm sm:text-base hover:scale-105 transition-transform">عرض التفاصيل</button>
-                            </div>
+            // --- RENDER FUNCTIONS (scoped to DOMContentLoaded) ---
+            function createCard(item, type, delay) {
+                return `<div class="card-container group" style="animation-delay: ${delay}ms" onclick="showDetailsPage('${item.id}', '${type}')">
+                    <div class="card-image-wrapper">
+                        <img src="${item.poster}" alt="${item.title}" class="w-full aspect-[2/3] object-cover">
+                        <div class="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors"></div>
+                        <i class="card-play-icon fa-regular fa-circle-play"></i>
+                        <div class="absolute top-2 right-2 bg-black/60 text-amber-400 text-xs font-bold px-2 py-1 rounded-full backdrop-blur-sm flex items-center gap-1">
+                            <i class="fas fa-star text-xs"></i> ${item.rating}
                         </div>
                     </div>
+                    <div class="pt-3 text-center">
+                        <h3 class="font-bold text-sm sm:text-base text-white truncate group-hover:golden-text transition-colors">${item.title}</h3>
+                        <p class="text-xs text-gray-400">${item.year} - ${item.genre}</p>
+                    </div>
                 </div>`;
-            }).join('');
+            }
+
+            function renderHomePageContent(searchTerm = '') {
+                const searchLower = searchTerm.toLowerCase();
+
+                const filterAndRender = (data, gridId) => {
+                    const grid = document.getElementById(gridId);
+                    if (!grid) return;
+                    const filteredData = data.filter(item => item.title.toLowerCase().includes(searchLower));
+                    grid.innerHTML = filteredData.map((item, i) => createCard(item, item.type || (db.movies.includes(item) ? 'movies' : 'series'), i * 50)).join('');
+                    const section = grid.closest('section');
+                    if (section) section.style.display = filteredData.length > 0 ? 'block' : 'none';
+                };
+
+                filterAndRender(db.movies, 'movies-grid');
+                filterAndRender(db.series, 'series-grid');
+                filterAndRender(db.movies.filter(m => m.genre.includes('أكشن') || m.genre.includes('جريمة')), 'action-movies-grid');
+                filterAndRender(db.movies.filter(m => m.genre.includes('كوميدي')), 'comedy-movies-grid');
+
+                const topRated = [...db.movies, ...db.series]
+                    .sort((a, b) => b.rating - a.rating)
+                    .slice(0, 5);
+                const topRatedList = document.getElementById('top-rated-list');
+                if (topRatedList) topRatedList.innerHTML = topRated.map(item => {
+                    const type = db.movies.includes(item) ? 'movies' : 'series';
+                    return `<div class="flex items-center space-x-reverse space-x-3 cursor-pointer group py-3" onclick="showDetailsPage('${item.id}', '${type}')">
+                        <img src="${item.poster}" class="w-12 h-20 object-cover rounded-md flex-shrink-0" alt="${item.title}">
+                        <div><h4 class="font-bold text-sm group-hover:golden-text transition-colors">${item.title}</h4><p class="text-xs text-gray-400">${item.genre}</p><p class="text-xs font-bold text-amber-400"><i class="fas fa-star text-xs"></i> ${item.rating}</p></div>
+                    </div>`;
+                }).join('');
+            }
+
+            // --- CINEMATIC SLIDER LOGIC ---
+            let sliderInterval;
+            let currentSlide = 0;
+            const sliderContainer = document.getElementById('slider-container');
+            const sliderDotsContainer = document.getElementById('slider-dots');
+            const sliderContent = [...db.movies, ...db.series].sort((a,b) => b.year - a.year);
+
+            function renderSlider() {
+                if(!sliderContainer || !sliderDotsContainer) return;
+                sliderContainer.innerHTML = sliderContent.map((item, index) => {
+                    const type = db.movies.some(m => m.id === item.id) ? 'movies' : 'series';
+                    return `<div class="slider-item" data-index="${index}" onclick="showDetailsPage('${item.id}', '${type}')">
+                        <img src="${item.poster}" class="slider-bg">
+                        <div class="slider-content container mx-auto">
+                            <div class="flex items-center gap-6 sm:gap-10">
+                                <img src="${item.poster}" class="slider-poster">
+                                <div class="text-right">
+                                    <h2 class="text-2xl sm:text-4xl md:text-5xl font-black mb-2 sm:mb-4">${item.title}</h2>
+                                    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-gray-200 mb-4 sm:mb-6 text-xs sm:text-base">
+                                        <span><i class="fas fa-calendar-alt golden-text ml-1"></i> ${item.year}</span>
+                                        <span class="opacity-50">|</span>
+                                        <span><i class="fas fa-film golden-text ml-1"></i> ${item.genre}</span>
+                                        <span class="opacity-50">|</span>
+                                        <span><i class="fas fa-star golden-text ml-1"></i> ${item.rating}</span>
+                                    </div>
+                                    <p class="text-sm sm:text-lg text-gray-300 mb-4 sm:mb-6 hidden md:block max-w-lg">${item.description.substring(0, 100)}...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('');
+                
+                sliderDotsContainer.innerHTML = sliderContent.map((_, index) => 
+                    `<button class="slider-dot" data-index="${index}"></button>`
+                ).join('');
+            }
+
+            function updateSlider() {
+                const sliderItems = document.querySelectorAll('.slider-item');
+                const sliderDots = document.querySelectorAll('.slider-dot');
+                if (sliderItems.length > 0) {
+                    sliderItems.forEach((item, index) => {
+                        item.classList.toggle('active', index === currentSlide);
+                    });
+                }
+                 if (sliderDots.length > 0) {
+                    sliderDots.forEach((dot, index) => {
+                        dot.classList.toggle('active', index === currentSlide);
+                    });
+                }
+            }
             
-            sliderDotsContainer.innerHTML = sliderContent.map((_, index) => 
-                `<button class="slider-dot" data-index="${index}"></button>`
-            ).join('');
-        }
+            function changeSlide(index) {
+                currentSlide = index;
+                updateSlider();
+                resetInterval();
+            }
 
-        function updateSlider() {
-            document.querySelectorAll('.slider-item').forEach((item, index) => {
-                item.classList.toggle('active', index === currentSlide);
-            });
-            document.querySelectorAll('.slider-dot').forEach((dot, index) => {
-                dot.classList.toggle('active', index === currentSlide);
-            });
-        }
-        
-        function changeSlide(index) {
-            currentSlide = index;
-            updateSlider();
-            resetInterval();
-        }
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % sliderContent.length;
+                updateSlider();
+            }
 
-        function nextSlide() {
-            currentSlide = (currentSlide + 1) % sliderContent.length;
-            updateSlider();
-        }
+            function prevSlide() {
+                currentSlide = (currentSlide - 1 + sliderContent.length) % sliderContent.length;
+                updateSlider();
+            }
 
-        function prevSlide() {
-            currentSlide = (currentSlide - 1 + sliderContent.length) % sliderContent.length;
-            updateSlider();
-        }
+            function resetInterval() {
+                clearInterval(sliderInterval);
+                sliderInterval = setInterval(nextSlide, 5000);
+            }
 
-        function resetInterval() {
-            clearInterval(sliderInterval);
-            sliderInterval = setInterval(nextSlide, 5000);
-        }
+            function initSliderEvents() {
+                const nextBtn = document.getElementById('next-slide');
+                const prevBtn = document.getElementById('prev-slide');
+                if(nextBtn) nextBtn.addEventListener('click', () => { nextSlide(); resetInterval(); });
+                if(prevBtn) prevBtn.addEventListener('click', () => { prevSlide(); resetInterval(); });
+                
+                document.querySelectorAll('.slider-dot').forEach(dot => {
+                    dot.addEventListener('click', () => changeSlide(parseInt(dot.dataset.index)));
+                });
+                resetInterval();
+            }
+            
+            // --- EVENT LISTENERS ---
+            const menuBtn = document.getElementById('menu-btn');
+            if(menuBtn) menuBtn.addEventListener('click', toggleMenu);
 
-        function initSliderEvents() {
-            document.getElementById('next-slide').addEventListener('click', () => { nextSlide(); resetInterval(); });
-            document.getElementById('prev-slide').addEventListener('click', () => { prevSlide(); resetInterval(); });
-            document.querySelectorAll('.slider-dot').forEach(dot => {
-                dot.addEventListener('click', () => changeSlide(parseInt(dot.dataset.index)));
-            });
-            resetInterval();
-        }
+            const searchBar = document.getElementById('search-bar');
+            if(searchBar) searchBar.addEventListener('input', (e) => renderHomePageContent(e.target.value));
 
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeWatchModal(); });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            renderHomePage();
+            // --- INITIALIZE APP ---
+            renderHomePageContent();
             renderSlider();
             updateSlider();
             initSliderEvents();
-            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeWatchModal(); });
         });
     </script>
 </body>
