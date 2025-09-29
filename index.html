@@ -165,15 +165,6 @@
                     <a href="#" onclick="scrollToSection('home-page'); return false;" class="golden-text">الرئيسية</a>
                     <a href="#" onclick="scrollToSection('movies-section'); return false;" class="text-gray-300 hover:golden-text transition-colors">أفلام</a>
                     <a href="#" onclick="scrollToSection('series-section'); return false;" class="text-gray-300 hover:golden-text transition-colors">مسلسلات</a>
-                    <div class="relative dropdown">
-                        <button class="text-gray-300 hover:golden-text transition-colors flex items-center gap-1">
-                            تصنيفات <i class="fas fa-chevron-down text-xs"></i>
-                        </button>
-                        <div class="dropdown-menu absolute hidden bg-[var(--background-light)] border border-[var(--border-color)] rounded-md mt-2 py-2 w-40 shadow-xl">
-                            <a href="#" onclick="scrollToSection('action-movies-section'); return false;" class="block px-4 py-2 text-sm text-gray-300 hover:bg-[var(--border-color)] hover:golden-text">أكشن</a>
-                            <a href="#" onclick="scrollToSection('comedy-movies-section'); return false;" class="block px-4 py-2 text-sm text-gray-300 hover:bg-[var(--border-color)] hover:golden-text">كوميدي</a>
-                        </div>
-                    </div>
                 </div>
                 
                 <div class="flex items-center gap-4">
@@ -194,8 +185,6 @@
                  <a href="#" onclick="scrollToSection('home-page'); toggleMenu(); return false;" class="golden-text">الرئيسية</a>
                  <a href="#" onclick="scrollToSection('movies-section'); toggleMenu(); return false;" class="text-gray-300 hover:golden-text transition-colors">أفلام</a>
                  <a href="#" onclick="scrollToSection('series-section'); toggleMenu(); return false;" class="text-gray-300 hover:golden-text transition-colors">مسلسلات</a>
-                 <a href="#" onclick="scrollToSection('action-movies-section'); toggleMenu(); return false;" class="text-gray-300 hover:golden-text transition-colors">أكشن</a>
-                 <a href="#" onclick="scrollToSection('comedy-movies-section'); toggleMenu(); return false;" class="text-gray-300 hover:golden-text transition-colors">كوميدي</a>
             </div>
         </div>
     </header>
@@ -216,14 +205,6 @@
                          <section id="movies-section" class="mb-12">
                             <h2 class="section-title">الأفلام</h2>
                             <div id="movies-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5"></div>
-                        </section>
-                        <section id="action-movies-section" class="mb-12">
-                            <h2 class="section-title">أفلام أكشن</h2>
-                            <div id="action-movies-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5"></div>
-                        </section>
-                        <section id="comedy-movies-section" class="mb-12">
-                            <h2 class="section-title">أفلام كوميدية</h2>
-                            <div id="comedy-movies-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5"></div>
                         </section>
                         <section id="series-section">
                             <h2 class="section-title">المسلسلات</h2>
@@ -271,6 +252,14 @@
                 { id: 'kera-wel-gen', title: 'كيرة والجن', year: 2022, genre: 'تاريخي, دراما', poster: 'https://i.postimg.cc/dQG7GFLw/Poster-Keerah-Wel-Gen-540x800.webp', description: 'يرصد الفيلم حالة الغليان بالشارع المصري بالتزامن مع ثورة 1919، ويوحد مصائر كيرة والجن للنضال ضد المحتل.', rating: 9.0, watchLink: '#' },
                 { id: 'el-feel-el-azraq-2', title: 'الفيل الأزرق 2', year: 2019, genre: 'رعب, غموض', poster: 'https://i.postimg.cc/ry9V8wD0/5d4ebd021c2ef-185052-500x714.webp', description: 'بعد 5 سنوات، يتزوج (يحيى) من (لبنى)، ويتم استدعاؤه لقسم الحالات الخطرة، ليلتقي بمن يتلاعب بحياته وحياة أسرته.', rating: 8.7, watchLink: '#' },
                 { id: 'el-harifa', title: 'الحريفة', year: 2024, genre: 'دراما, رياضي', poster: 'https://i.postimg.cc/Vk9gNnCq/u-Nd-AFjr0gz-L4-Na-Jw1lpg-W5-On0-FM-533x800.webp', description: '(ماجد) يترك حياة الرخاء وينتقل لمدرسة حكومية، ويكتسب احترام زملائه بسبب مهارته في كرة القدم.', rating: 7.8, watchLink: 'https://vsped-fs4-eci.cdnz.quest/hls2/01/00174/gzyqj7swpsfs_n/index-v1-a1.m3u8?t=9yMATqNDlKeY812MWQg26FU_nTrpIPVWPnZiM7UpYaM&s=1759158753&e=43200&v=1063522&i=0.0&sp=0' },
+                { id: 'siko-siko', title: 'سيكو سيكو', year: 2025, genre: 'كوميدي', poster: 'https://i.ibb.co/RGXk2DDy/rl-NIIPi3pm7k-Y5-Mgi-N3g-DHESEkk-533x800.webp', description: 'فيلم كوميدي جديد مليء بالمواقف المضحكة والمفارقات.', rating: 7.2, watchLink: '#' },
+                { id: 'restart', title: 'ريستارت', year: 2025, genre: 'أكشن, تشويق', poster: 'https://i.ibb.co/DDbcjL55/i7az-Evi5-NTa-Dzaj7d-Qii-Jy-X1-BEI-533x800.webp', description: 'فيلم أكشن وتشويق يعود فيه البطل لبداية جديدة مليئة بالمخاطر.', rating: 8.5, watchLink: '#' },
+                { id: 'el-system', title: 'السيستم', year: 2024, genre: 'كوميدي, رومانسي', poster: 'https://i.ibb.co/Z6fS323q/660x990-533x800.webp', description: 'شاب يعاني من الفشل في العلاقات العاطفية، حتى يكتشف نظامًا جديدًا للتعامل مع النساء.', rating: 7.8, watchLink: '#' },
+                { id: 'ahmed-w-ahmed', title: 'أحمد وأحمد', year: 2025, genre: 'كوميدي', poster: 'https://i.ibb.co/6JYnjtcw/232380.jpg', description: 'مغامرات كوميدية تجمع بين شخصيتين متناقضتين.', rating: 7.0, watchLink: '#' },
+                { id: 'el-hana-ely-ana-feeh', title: 'الهنا اللي أنا فيه', year: 2024, genre: 'كوميدي, فانتازيا', poster: 'https://i.ibb.co/mVKZYycb/6-Z106-Yd9isjur-Vwg5am0lj-X4v6x-scaled-533x800.webp', description: 'تدور الأحداث في إطار كوميدي خيالي حول شخص يجد نفسه في مواقف غير متوقعة.', rating: 7.6, watchLink: '#' },
+                { id: 'el-harifa-2', title: 'الحريفة ٢', year: 2025, genre: 'دراما, رياضي', poster: 'https://i.ibb.co/twmwQ0pF/ot-GXs-G3s-MPZBi2-VXD3-Xf-Xg94-DBa-scaled-533x800.webp', description: 'الجزء الثاني من فيلم الحريفة، حيث يواجه الفريق تحديات جديدة وأكبر.', rating: 8.1, watchLink: '#' },
+                { id: 'el-dashash', title: 'الدشاش', year: 2025, genre: 'أكشن', poster: 'https://i.ibb.co/fd0rb462/9-DMq-WKY9qd2o-Jo-Bzg4h-L1-Oxg-Sw9-533x800.webp', description: 'فيلم أكشن يغوص في عالم الجريمة والصراعات.', rating: 8.3, watchLink: '#' },
+                { id: 'rambo-exit', title: 'البحث عن منفذ لخروج السيد رامبو', year: 2024, genre: 'كوميدي, دراما', poster: 'https://i.ibb.co/dw96pmxr/366a4e10-1d4b-4b09-a0fa-7118a3cbe4e7-540x800.webp', description: 'في إطار كوميدي، يحاول شاب إيجاد مخرج من المواقف الصعبة التي يضع نفسه فيها.', rating: 7.9, watchLink: '#' }
             ],
             series: [
                 { id: 'saffah-el-giza', title: 'سفاح الجيزة', year: 2023, genre: 'جريمة, غموض', poster: 'https://i.postimg.cc/k4vmXTg3/Poster-The-Serial-Killer-540x800.webp', description: 'تدور أحداث المسلسل حول عدد من الجرائم الغامضة، والدوافع التي امتلكها جابر الذي وُصف لاحقًا بأنه قاتل متسلسل.', rating: 9.2, watchLink: '#' },
@@ -298,17 +287,21 @@
         function toggleMenu() {
             if (mobileMenu) mobileMenu.classList.toggle('hidden');
         }
-        
+
         function scrollToSection(sectionId) {
             const section = document.getElementById(sectionId);
             if(section) {
-                section.scrollIntoView({ behavior: 'smooth' });
+                // Smooth scroll to section
+                window.scrollTo({
+                    top: section.offsetTop - 100, // Offset for sticky header
+                    behavior: 'smooth'
+                });
             }
             if(mobileMenu && !mobileMenu.classList.contains('hidden')){
                 toggleMenu();
             }
         }
-
+        
         function showDetailsPage(id, type) {
             const content = db[type].find(item => item.id === id);
             if (!content) return;
@@ -435,6 +428,7 @@
 
             function renderSlider() {
                 if(!sliderContainer || !sliderDotsContainer) return;
+
                 sliderContainer.innerHTML = sliderContent.map((item, index) => {
                     const type = db.movies.some(m => m.id === item.id) ? 'movies' : 'series';
                     return `<div class="slider-item" data-index="${index}" onclick="showDetailsPage('${item.id}', '${type}')">
@@ -502,6 +496,7 @@
             function initSliderEvents() {
                 const nextBtn = document.getElementById('next-slide');
                 const prevBtn = document.getElementById('prev-slide');
+
                 if(nextBtn) nextBtn.addEventListener('click', () => { nextSlide(); resetInterval(); });
                 if(prevBtn) prevBtn.addEventListener('click', () => { prevSlide(); resetInterval(); });
                 
