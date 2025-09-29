@@ -1,858 +1,452 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عرب فليكس - مشاهدة وتحميل الأفلام والمسلسلات</title>
-    <!-- Tailwind CSS CDN -->
+    <meta charset="UTF-8">
+    <title>عرب فليكس - تصميم ثابت ومستقر</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- HLS.js for Streaming -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Google Fonts - Cairo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* Custom Styles */
-        html {
-            scroll-behavior: smooth;
+        :root {
+            --background-dark: #0A0A0A;
+            --background-light: #141414;
+            --brand-gold: #DAA520;
+            --text-primary: #f5f5f5;
+            --border-color: #262626;
         }
+
+        @keyframes slideInUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        
+        html { scroll-behavior: smooth; }
         body {
             font-family: 'Cairo', sans-serif;
+            background-color: var(--background-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
         }
         
-        /* Custom scrollbar for better dark mode aesthetics */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+        .golden-text { color: var(--brand-gold); }
+
+        .card-container {
+            animation: slideInUp 0.5s ease-out forwards;
+            opacity: 0;
         }
-        ::-webkit-scrollbar-track {
-            background: #1e1e1e;
+        .card-image-wrapper {
+            position: relative;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            border: 2px solid var(--border-color);
+            transition: all 0.4s ease;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #f59e0b;
-            border-radius: 10px;
+        .card-container:hover .card-image-wrapper {
+            transform: translateY(-8px);
+            border-color: var(--brand-gold);
+            box-shadow: 0 10px 25px -5px rgba(218, 165, 32, 0.4);
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #d97706;
+        .card-play-icon {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            transition: all 0.4s ease;
+            font-size: 3rem; color: white;
+            text-shadow: 0 0 20px black;
+        }
+        .card-container:hover .card-play-icon {
+            transform: translate(-50%, -50%) scale(1);
         }
 
-        /* Slider transitions */
+        .section-title {
+            text-align: right; font-size: 1.875rem; font-weight: 900;
+            margin-bottom: 2rem; position: relative; padding-right: 1.25rem;
+        }
+        .section-title::before {
+            content: ''; position: absolute; top: 50%; right: 0;
+            transform: translateY(-50%);
+            width: 5px; height: 70%;
+            background: var(--brand-gold);
+            border-radius: 3px;
+        }
+
+        .page-transition { transition: opacity 0.5s ease, transform 0.5s ease; }
+        .page-hidden { display: none; }
+        .modal { transition: opacity 0.3s ease, visibility 0.3s ease; }
+        .modal-content { transition: transform 0.3s ease; }
+        .dropdown:hover .dropdown-menu { display: block; }
+        
+        /* --- Cinematic Slider --- */
+        #hero-section {
+            position: relative;
+            height: 60vh;
+            min-height: 450px;
+            overflow: hidden;
+        }
         .slider-item {
-            transition: opacity 1s ease-in-out;
             position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 1.2s ease-in-out;
+        }
+        .slider-item.active {
+            opacity: 1;
+            z-index: 10;
+        }
+        .slider-bg {
+            position: absolute;
+            inset: 0;
             width: 100%;
             height: 100%;
+            object-fit: cover;
+            transform: scale(1.1);
+            filter: blur(10px) brightness(0.4);
         }
-        .details-backdrop {
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-        .details-backdrop::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(18, 18, 18, 0.85);
-            backdrop-filter: blur(8px);
-        }
-        .episode-list::-webkit-scrollbar-thumb {
-            background: #4a4a4a;
-        }
-        .episode-list::-webkit-scrollbar-thumb:hover {
-            background: #6a6a6a;
-        }
-
-        /* Animation for cards */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .card-animate {
-            animation: fadeIn 0.5s ease-out forwards;
-            opacity: 0; /* Start hidden */
-        }
-        
-        /* Details page transition */
-        .page-overlay {
-            transition: opacity 0.3s ease-in-out;
-        }
-
-        /* --- Aurora Hover Effect on Cards --- */
-        .aurora-card {
+        .slider-content {
             position: relative;
-            overflow: hidden;
-            border: 1px solid #2d2d2d;
+            z-index: 15;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            animation: fadeIn 1.2s ease-out forwards;
         }
-        .aurora-card::before {
-            content: '';
+        .slider-poster {
+            width: 150px;
+            height: 225px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+         @media (min-width: 768px) {
+            .slider-poster {
+                width: 180px;
+                height: 270px;
+            }
+        }
+        .slider-dots {
             position: absolute;
-            top: var(--y, 0);
-            left: var(--x, 0);
-            transform: translate(-50%, -50%);
-            width: 400px;
-            height: 400px;
-            background-image: radial-gradient(circle, rgba(245, 158, 11, 0.25), transparent 80%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            pointer-events: none; /* Make sure it doesn't block clicks */
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.75rem;
+            z-index: 20;
         }
-        .aurora-card:hover::before {
-            opacity: 1;
+        .slider-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
-        .mood-selector button.active {
-            background-color: #f59e0b;
-            color: black;
-            font-weight: bold;
+        .slider-dot.active {
+            background-color: var(--brand-gold);
+            transform: scale(1.2);
         }
     </style>
 </head>
-<body class="antialiased bg-[#121212] text-slate-200">
+<body class="antialiased">
 
-    <!-- Main Application Container -->
-    <div id="app" class="min-h-screen">
-        
-        <!-- Header -->
-        <header class="bg-[#1e1e1e] sticky top-0 z-50 shadow-black/20 border-b border-[#2d2d2d]">
-            <div class="container mx-auto px-4 py-3 flex justify-between items-center relative">
-                <!-- Logo and Nav -->
-                <div class="flex items-center gap-3 sm:gap-6">
-                    <a href="#" onclick="goHome(event)" class="cursor-pointer flex items-center gap-3 group">
-                           <div class="w-10 h-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                              <svg class="w-10 h-10 text-amber-500" viewBox="0 0 24 24" fill="currentColor">
-                                     <path d="M12,2A10,10 0 1,0 22,12A10,10 0 0,0 12,2M10,16.5V7.5L16,12L10,16.5Z" />
-                              </svg>
-                          </div>
-                        <h1 class="text-xl sm:text-2xl font-bold text-amber-500">عرب فليكس</h1>
-                    </a>
-                    <nav class="hidden md:flex items-center gap-4">
-                        <a href="#movies" onclick="smoothScrollTo('#movies', event)" class="text-gray-300 hover:text-amber-500 transition duration-300">أفلام</a>
-                        <a href="#series" onclick="smoothScrollTo('#series', event)" class="text-gray-300 hover:text-amber-500 transition duration-300">مسلسلات</a>
-                    </nav>
-                </div>
-
-                <div class="flex items-center gap-4">
-                    <!-- Search Bar -->
-                    <div class="hidden sm:flex items-center gap-2 bg-[#121212] border border-[#2d2d2d] rounded-full px-3 py-1.5 w-full max-w-xs">
-                        <i class="fa fa-search text-gray-500"></i>
-                        <input type="text" id="searchInput" placeholder="ابحث عن فيلم أو مسلسل..." class="bg-transparent focus:outline-none w-full text-slate-200 placeholder:text-gray-500">
-                    </div>
-                     <!-- Surprise Me Button -->
-                    <button onclick="showRandomSuggestion()" class="hidden sm:flex items-center gap-2 bg-amber-500 text-black rounded-full px-4 py-1.5 hover:bg-amber-600 transition transform hover:scale-105" title="اقتراح عشوائي">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
-                        <span class="hidden lg:block">فاجئني!</span>
-                    </button>
-                    <!-- User ID Display -->
-                    <div id="user-id-display" class="hidden md:block text-xs text-gray-400"></div>
-                    <!-- Mobile Menu Button -->
-                    <button id="mobile-menu-btn" class="md:hidden text-2xl text-gray-300">
-                        <i class="fa fa-bars"></i>
-                    </button>
-                </div>
-                   <!-- Mobile Menu -->
-                <div id="mobile-menu" class="hidden md:hidden bg-[#1e1e1e] absolute top-full right-0 left-0 border-t border-[#2d2d2d]">
-                    <nav class="flex flex-col p-4 gap-4">
-                        <a href="#" onclick="goHome(event); closeMobileMenu();" class="text-gray-300 hover:text-amber-500 transition duration-300">الرئيسية</a>
-                        <a href="#movies" onclick="smoothScrollTo('#movies', event); closeMobileMenu();" class="text-gray-300 hover:text-amber-500 transition duration-300">أفلام</a>
-                        <a href="#series" onclick="smoothScrollTo('#series', event); closeMobileMenu();" class="text-gray-300 hover:text-amber-500 transition duration-300">مسلسلات</a>
-                        <a href="#" onclick="showRandomSuggestion(); closeMobileMenu();" class="text-gray-300 hover:text-amber-500 transition duration-300"><i class="fa-solid fa-wand-magic-sparkles ml-2"></i> فاجئني!</a>
-                    </nav>
-                </div>
-            </div>
-        </header>
-        
-        <!-- Construction Banner -->
-        <div id="construction-banner" class="bg-amber-500 text-black text-center p-2 relative text-sm sm:text-base">
-            <p>
-                <i class="fa-solid fa-triangle-exclamation mx-2"></i>
-                <strong>تنبيه:</strong> هذا الموقع تحت الإنشاء والتجربة حاليًا. جميع المحتويات للعرض فقط.
-            </p>
-            <button id="close-banner-btn" class="absolute top-1/2 -translate-y-1/2 left-4 text-xl hover:text-black/70 transition-colors">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
-
-
-        <!-- Main Content Area -->
-        <main id="main-content" class="container mx-auto px-4 py-8">
-            
-            <!-- Hero Slider -->
-            <section id="slider-container" class="relative w-full h-56 md:h-72 lg:h-96 rounded-2xl overflow-hidden shadow-2xl shadow-black/30 mb-10">
-                <!-- Slider items will be injected here by JS -->
-            </section>
-
-              <!-- Mood Selector Section -->
-            <section id="mood-selector" class="mb-10">
-                <h2 class="text-2xl font-bold border-r-4 border-amber-500 pr-4 mb-6">اختر حسب حالتك المزاجية</h2>
-                <div class="mood-selector flex flex-wrap gap-3">
-                    <button data-genre="all" class="active bg-[#1e1e1e] border border-[#2d2d2d] py-2 px-5 rounded-full hover:bg-amber-500 hover:text-black transition transform hover:scale-105">الكل</button>
-                    <button data-genre="كوميدي" class="bg-[#1e1e1e] border border-[#2d2d2d] py-2 px-5 rounded-full hover:bg-amber-500 hover:text-black transition transform hover:scale-105">😂 محتاج أضحك</button>
-                    <button data-genre="أكشن" class="bg-[#1e1e1e] border border-[#2d2d2d] py-2 px-5 rounded-full hover:bg-amber-500 hover:text-black transition transform hover:scale-105">🔥 سهرة أكشن</button>
-                    <button data-genre="جريمة" class="bg-[#1e1e1e] border border-[#2d2d2d] py-2 px-5 rounded-full hover:bg-amber-500 hover:text-black transition transform hover:scale-105">🕵️‍♂️ غموض وتشويق</button>
-                    <button data-genre="دراما" class="bg-[#1e1e1e] border border-[#2d2d2d] py-2 px-5 rounded-full hover:bg-amber-500 hover:text-black transition transform hover:scale-105">😢 جرعة دراما</button>
-                </div>
-            </section>
-            
-            <div class="flex flex-col lg:flex-row gap-8">
-                <!-- Content Grid -->
-                <div class="w-full lg:w-3/4">
-                    <!-- Movies Section -->
-                    <section id="movies" class="mb-10">
-                        <h2 class="text-2xl font-bold border-r-4 border-amber-500 pr-4 mb-6">أحدث الأفلام</h2>
-                        <div id="movies-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-6">
-                            <!-- Movie cards will be injected here by JS -->
-                        </div>
-                    </section>
-                    <!-- Series Section -->
-                    <section id="series" class="mb-10">
-                        <h2 class="text-2xl font-bold border-r-4 border-amber-500 pr-4 mb-6">أحدث المسلسلات</h2>
-                        <div id="series-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-6">
-                            <!-- Series cards will be injected here by JS -->
-                        </div>
-                    </section>
-                </div>
+    <!-- Header -->
+    <header class="bg-black/70 backdrop-blur-lg shadow-lg sticky top-0 z-40 border-b border-[var(--border-color)]">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="#" onclick="showHomePage(); return false;" class="flex items-center gap-3">
+                    <span class="font-black text-2xl sm:text-3xl tracking-wider">
+                        <span class="golden-text">عرب</span> <span class="text-white">فليكس</span>
+                    </span>
+                </a>
                 
-                <!-- Sidebar -->
-                <aside class="w-full lg:w-1/4">
-                    <div class="bg-[#1e1e1e] p-4 rounded-lg sticky top-24 border border-[#2d2d2d]">
-                        <h3 class="text-xl font-bold border-r-4 border-amber-500 pr-4 mb-4">الأكثر مشاهدة</h3>
-                        <div id="top-rated-list" class="space-y-4">
-                            <!-- Top rated items will be injected here by JS -->
-                        </div>
-                    </div>
-                </aside>
-            </div>
-        </main>
-
-        <!-- Details Page Overlay -->
-        <div id="details-page" class="page-overlay hidden opacity-0 pointer-events-none fixed inset-0 z-[60] overflow-y-auto">
-            <!-- Details content will be injected here by JS -->
-        </div>
-        
-        <!-- Static Page Overlay -->
-        <div id="static-page" class="page-overlay hidden opacity-0 pointer-events-none fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black bg-opacity-70 backdrop-blur-sm">
-            <!-- Static page content will be injected here by JS -->
-        </div>
-
-
-        <!-- Footer -->
-        <footer class="bg-[#1e1e1e] border-t border-[#2d2d2d] mt-12 py-8">
-            <div class="container mx-auto px-4 text-center text-gray-400">
-                <div class="flex justify-center gap-6 mb-4">
-                    <a href="#" onclick="showStaticPage('policy', event)" class="hover:text-amber-500 transition">سياسة الاستخدام</a>
-                    <a href="#" onclick="showStaticPage('contact', event)" class="hover:text-amber-500 transition">اتصل بنا</a>
-                    <a href="#" onclick="showStaticPage('about', event)" class="hover:text-amber-500 transition">عن الموقع</a>
-                </div>
-                <div class="flex justify-center gap-6 mb-4 text-2xl">
-                    <a href="https://www.facebook.com/share/174qjXU6fe/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-amber-500 transition"><i class="fa-brands fa-facebook"></i></a>
-                </div>
-                <p>&copy; 2025 عرب فليكس. جميع الحقوق محفوظة.</p>
-            </div>
-        </footer>
-    </div>
-    
-    <!-- Notification/Toast -->
-    <div id="notification" class="fixed bottom-5 right-5 bg-amber-500 text-black font-bold py-3 px-6 rounded-lg shadow-lg opacity-0 transform translate-y-10 transition-all duration-500 z-[100]">
-        <p id="notification-message"></p>
-    </div>
-
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot, query, setDoc, doc, writeBatch, setLogLevel } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-        // Firebase global variables (provided by Canvas environment)
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-        let app;
-        let db;
-        let auth;
-        let userId = 'anonymous'; // Default to anonymous
-        let isAuthReady = false;
-        let hlsInstance = null; // To keep track of HLS instance
-
-        // --- DATA WILL BE LOADED FROM FIRESTORE ---
-        const SCRIPT_DATA_VERSION = '4.3'; // Updated movie info
-        const initialData = [
-            { id: 1, type: 'movie', title: 'ولاد رزق 3: القاضية', year: 2024, genre: 'أكشن, جريمة', poster: 'https://i.postimg.cc/Lsph0Zc5/Welad-Rizk-3-El-Qadia.jpg', rating: 7.8, description: 'بعد مرور سنوات وانفصال الأخوة في طرقهم الحياتية المختلفة، يعود شبح من الماضي ليلقي بظلاله على ولاد رزق، مما يجبرهم على العودة إلى حياة الجريمة والسرقة مرة أخرى.', videoSrc: 'https://www.youtube.com/watch?v=8cawCGKqEi0', externalWatchLink: 'https://ddyops01h.dls4all.online/d/2aqpocnsfsrnuwfu2z6ijzhsvvp3lqy3egmjbnn2dwnrmxyf4532aak46rjvyj7lo7eqrpod/video.mp4', ai_critic_quote: 'عودة طال انتظارها بجرعة أكشن ومخاطر تصل إلى عنان السماء. هل تنجح الأسود في استعادة عرينها؟' },
-            { id: 23, type: 'movie', title: 'الحريفة', year: 2024, genre: 'دراما, رياضة', poster: 'https://i.postimg.cc/Px87g548/u-Nd-AFjr0gz-L4-Na-Jw1lpg-W5-On0-FM-533x800.webp', rating: 7.5, description: 'بعد أن تتسبب المشاكل في انتقاله من مدرسة خاصة إلى مدرسة حكومية، يكتشف ماجد موهبته في كرة القدم وينضم إلى فريق المدرسة على أمل الفوز بالبطولة.', videoSrc: 'https://www.youtube.com/watch?v=FLePppoP-34', externalWatchLink: 'https://fhd20a15.dls4all.online/d/2qqeinfsfsrnuwfu2v6i5p54w6nlig3cl3mud3nn73m5xig5damzvcgdyg4xxsnvksoxsgvl/video.mp4', ai_critic_quote: 'كرة القدم في الشارع المصري كما لم ترها من قبل. فيلم عن الأحلام والصداقة في مواجهة الصعاب.' },
-            { id: 17, type: 'movie', title: 'اللعب مع العيال', year: 2024, genre: 'كوميدي', poster: 'https://i.postimg.cc/wMrDtcwF/image.jpg', rating: 7.5, description: 'في إطار من الكوميديا، يُكلف معلم تاريخ بالتدريس في إحدى المدارس بمنطقة صحراوية، فيواجه العديد من العقبات التي لم تكن في الحسبان.', videoSrc: 'https://www.youtube.com/watch?v=nxOkDx65Otk', externalWatchLink: 'https://fhd20b1.dls4all.online/d/4aqann5tfsrnuwfu3n6nhzpr7gjsq7c6dluvx3c4e3z2fwtzsvgbe2sefe4ifmtcinaqmvnp/video.mp4', ai_critic_quote: 'كوميديا من قلب الصحراء، حيث التاريخ والجغرافيا يلتقيان في مواقف لا تُنسى. ضحك مضمون!'},
-            { id: 18, type: 'movie', title: 'أهل الكهف', year: 2024, genre: 'أكشن, تاريخي', poster: 'https://i.postimg.cc/d1L2JxBD/x-Iiv-Uefce-D30w-Iy-ZAK1z55-SBv-TT-533x800.webp', rating: 7.9, description: 'في عام 250 ميلادية، يفر ثلاثة من المؤمنين من بطش الحاكم الروماني، ويلجأون إلى كهف مهجور، حيث ينامون لمدة 309 سنوات ثم يستيقظون في زمن آخر.', videoSrc: 'https://www.youtube.com/watch?v=3CRDpyAIkyI', externalWatchLink: 'https://ddy35s65h.dls4all.online/d/3yqmt3ftfsrnuwfu3f6jh3xbuo5kmc2jtssit2kak4cfqaj7w6rxraf6pyp2laxpcn4n3bhe/video.mp4', ai_critic_quote: 'أسطورة تتجسد على الشاشة. صراع بين الإيمان والطغيان في رحلة عبر الزمن.' },
-            { id: 21, type: 'movie', title: 'شقو', year: 2024, genre: 'أكشن, تشويق', poster: 'https://i.postimg.cc/nVmFN1Jk/images-1.jpg', rating: 7.6, description: 'مجموعة من الأصدقاء خارجون عن القانون يمارسون أعمالاً إجرامية مشبوهة، لكنها تقودهم إلى أزمات كبيرة وتحدث وراءها تبعات خطيرة.', videoSrc: 'https://www.youtube.com/watch?v=bzOr9-9bj6g', externalWatchLink: 'https://fhd20b1.dls4all.online/d/4aqfdfvtfsrnuwfu3v6nf2hwuv5fm2gk6kn6afkwzjlja4uq4jgswdljbropubwbks7ybsir/video.mp4', ai_critic_quote: 'عندما تجتمع الصداقة مع عالم الجريمة، تكون العواقب وخيمة. فيلم يحبس الأنفاس.'},
-            { id: 30, type: 'movie', title: 'المشروع اكس', year: 2025, genre: 'كوميدي', poster: 'https://i.postimg.cc/R0Y3WzYM/anuo-OC2-JRa-Bq5-Ea-Wrf9-X48n-DE5-A-scaled-533x800.webp', rating: 7.2, description: 'مجموعة من الأصدقاء يقررون إقامة حفلة صاخبة، لكن الأمور تخرج عن السيطرة تمامًا وتتحول إلى فوضى عارمة.', videoSrc: 'https://www.youtube.com/watch?v=c_i2iha_4-I', externalWatchLink: 'https://fhd2k202.dls4all.online/d/7uqa3entfsrnuwfu3v6nh2phxyqgcmlsg2bkxkvemebzguh432xo3vg2j63dtrza4punbxy2/video.mp4', ai_critic_quote: 'حفلة واحدة كانت كفيلة بتغيير كل شيء. فيلم عن صداقة وجنون شبابي يصل إلى أقصى حدوده.'},
-            { id: 22, type: 'series', title: 'أشغال شقة', year: 2024, genre: 'كوميدي', poster: 'https://i.postimg.cc/MTSwSCxm/scaled-600x800.webp', rating: 8.0, description: 'يُرزق طبيب شرعي وزوجته المذيعة بتوأم بعد فترة من عدم الإنجاب، ويقرران الاستعانة بمديرة منزل لرعاية الطفلين، ولكنهما يعانيان بشدة في رحلة البحث عن مساعدة مناسبة.', videoSrc: 'https://www.youtube.com/watch?v=wkeFEg0Tlwc', episodes: Array.from({length: 15}, (_, i) => ({ number: i + 1, videoSrc: 'https://www.youtube.com/watch?v=wkeFEg0Tlwc' })), ai_critic_quote: 'كوميديا عائلية من نوع آخر! مشاهدة الفوضى اليومية تتحول إلى فن مضحك.' },
-            { id: 26, type: 'series', title: 'بالطو', year: 2023, genre: 'كوميدي', poster: 'https://i.postimg.cc/vZfcZrmY/11675252737718-e1676444599414-625x800.webp', rating: 8.6, description: 'طبيب شاب حديث التخرج يُكلف بالعمل في وحدة صحية بقرية نائية، وهناك يجد نفسه فجأة مديرًا للوحدة ومسؤولاً عن كل شيء، مما يوقعه في مواقف كوميدية لا حصر لها.', videoSrc: 'https://www.youtube.com/watch?v=B1-2Aay0A24', episodes: Array.from({length: 10}, (_, i) => ({ number: i + 1, videoSrc: 'https://www.youtube.com/watch?v=B1-2Aay0A24' })), ai_critic_quote: 'جرعة من الكوميديا الواقعية من قلب الوحدات الصحية المصرية. مسلسل يجعلك تضحك على مآسي بطلها الطبيب الشاب.' },
-            { id: 5, type: 'series', title: 'سفاح الجيزة', year: 2023, genre: 'جريمة, إثارة', poster: 'https://i.postimg.cc/k4vmXTg3/Poster-The-Serial-Killer-540x800.webp', rating: 7.9, description: 'مسلسل مستوحى من أحداث حقيقية، يدور حول قصة سفاح غامض يرتكب سلسلة من الجرائم المروعة.', videoSrc: 'https://www.youtube.com/watch?v=aFGDL4d2pS8', episodes: [
-                { number: 1, videoSrc: 'https://ddy35s65h.dls4all.online/d/3yqd5h5sfsrnuwfu5z6j5pnquyr2kbiuupht3fupgeykc55lemfhijgcenesjdva42j2vc5l/video.mp4' },
-                { number: 2, videoSrc: 'https://ddy35s62h.dls4all.online/d/yaqhlefsfsrnuwfu5z6jf75s7fge6lja4da7wr65yo52pqubqgkeyro7bflqkzgdijay5ss3/video.mp4' },
-                { number: 3, videoSrc: 'https://ddyops01h.dls4all.online/d/2aqelevsfsrnuwfu5z6i53hlxxncbrf2ltggddfhlxjb6pswcdkssovclclwuy5ob6d6wovl/video.mp4' },
-                { number: 4, videoSrc: 'https://ddy35s62h.dls4all.online/d/yaqejevsfsrnuwfu5z6jd4f47lv3c7jtb75dg7s3trdzkzr3xtk74p2yd6zt4xoasjfl726p/video.mp4' },
-                { number: 5, videoSrc: 'https://vsped-store2-fxa.cdnz.quest/hls2/01/00136/n2kpnhhxftme_n/index-v1-a1.m3u8?t=8xbdH8ggq6qwi9SotAu2WtS_jaDzgpvd1s8bl4204eg&s=1759020289&e=43200&v=172301&i=0.0&sp=0' },
-                { number: 6, videoSrc: 'https://ddy35s65h.dls4all.online/d/3yqp5hfsfsrnuwfu5z6ir7767q5yqzotbrdhjzj535qacz26qdqob6sp25s2gr55irym2krt/video.mp4' },
-                { number: 7, videoSrc: 'https://vsped-store2-fxa.cdnz.quest/hls2/02/00137/60knijeig5lq_l/index-v1-a1.m3u8?t=qshmYGy8SD1VCZ_4WRq7-J7szHXebCJaAbhYS2S-i3A&s=1759020492&e=43200&v=175575&i=0.0&sp=0' },
-                { number: 8, videoSrc: 'https://vsped-store2-fxa.cdnz.quest/hls2/02/00137/hm9xrvrddbzd_l/index-v1-a1.m3u8?t=4SIzg3qCJ4xU3q3N5lQbR8CrJQZpk65yF5oQQejW8Ko&s=1759020529&e=43200&v=176155&i=0.0&sp=0' }
-            ], ai_critic_quote: 'وجهان لعملة واحدة: الهدوء الذي يخفي خلفه وحشًا. مسلسل سيجعلك تشك في كل من حولك.'},
-            { id: 27, type: 'movie', title: 'وش في وش', year: 2023, genre: 'كوميدي, دراما', poster: 'https://i.postimg.cc/rp2R1hHc/Wesh2-700x732.webp', rating: 7.7, description: 'تدور الأحداث داخل شقة زوجية، حيث يجتمع أفراد عائلتي الزوج والزوجة في شقة واحدة بالصدفة، وتحدث بينهم العديد من المشكلات بسبب الاختلافات الثقافية والاجتماعية.', videoSrc: 'https://www.youtube.com/watch?v=D-h55g535aA', externalWatchLink: 'https://ddy35s65h.dls4all.online/d/3yqgwmnsfsrnuwfu2v6nfzfqu5iofqlrsdtehgd5gsblfufxytaxepe23mtgcohgoggwpz2z/video.mp4', ai_critic_quote: 'كوميديا اجتماعية ذكية تحبس الجميع في شقة واحدة وتطلق العنان للفوضى. فيلم يعكس الواقع المصري بروح من الدعابة.'},
-            { id: 24, type: 'movie', title: 'فوي! فوي! فوي!', year: 2023, genre: 'كوميدي, دراما', poster: 'https://i.postimg.cc/wBRFvbmj/lz6mu2-Nz5-BICSf-LL0-Ih-Tcycfbc2-scaled_532x800.webp', rating: 8.2, description: 'حسن حارس أمن يعيش حياة فقيرة، ويحلم بالسفر إلى أوروبا. ينضم بالخداع إلى فريق كرة قدم للمكفوفين للمشاركة في كأس العالم في بولندا.', videoSrc: 'https://www.youtube.com/watch?v=s48L5tQ1L-g', externalWatchLink: 'https://fhd20a14.dls4all.online/d/2uqdkofsfsrnuwfu2v6jlopivnj342kp2mmoj2s5tvuzxqlrv7bbq6ewcptrz54c7hjo7t6l/video.mp4', ai_critic_quote: 'تحفة سينمائية تجمع بين الضحك والدموع، وتطرح أسئلة عميقة حول الأحلام والفرص المستحيلة.' },
-            { id: 28, type: 'series', title: 'على باب العمارة', year: 2023, genre: 'كوميدي, اجتماعي', poster: 'https://i.postimg.cc/wTt1S88q/2023-700x615.webp', rating: 7.9, description: 'شاب صعيدي ثري يهرب إلى القاهرة ويعمل كبواب عمارة هربًا من الثأر، وهناك يواجه العديد من المواقف الكوميدية مع سكان العمارة غريبي الأطوار.', videoSrc: 'https://www.youtube.com/watch?v=QfC_1E-iMVo', episodes: Array.from({length: 10}, (_, i) => ({ number: i + 1, videoSrc: 'https://www.youtube.com/watch?v=QfC_1E-iMVo' })), ai_critic_quote: 'كوميديا خفيفة عن صراع الثقافات بين سكان العمارة والبواب الجديد القادم من الصعيد. مسلسل ممتع.'},
-            { id: 9, type: 'movie', title: 'كيرة والجن', year: 2022, genre: 'تاريخي, دراما', poster: 'https://i.postimg.cc/dQG7GFLw/Poster-Keerah-Wel-Gen-540x800.webp', rating: 8.1, description: 'يرصد الفيلم حقبة مهمة في تاريخ مصر أثناء ثورة 1919، ويتناول واقع المجتمع المصري في فترة الاحتلال الإنجليزي.', videoSrc: 'https://www.youtube.com/watch?v=igChw42zmP0', externalWatchLink: 'https://ddyops01h.dls4all.online/d/2aqlhp5sfsrnuwfu556ihzvtvft2vygyghg77l7wgqlipscwtgmkogsrtwmo2etrsqxgqun5/video.mp4', ai_critic_quote: 'ملحمة تاريخية عن المقاومة والصداقة في قلب ثورة 1919. عمل سينمائي متكامل.' },
-            { id: 19, type: 'series', title: 'البيت بيتي', year: 2022, genre: 'كوميدي, رعب', poster: 'https://i.postimg.cc/qvPQD0XQ/albait-baity-Poster2_ar-540x800.webp', rating: 8.3, description: 'يجبر بينو على العودة إلى القاهرة من أجل تسوية ميراثه، ولكن سرعان ما يصاب بالصدمة عند معرفته أن ما يرثه سيعرضه للمغامرات المرعبة.', videoSrc: 'https://www.youtube.com/watch?v=W0yVSEe-eDY', episodes: Array.from({length: 10}, (_, i) => ({ number: i + 1, videoSrc: 'https://www.youtube.com/watch?v=W0yVSEe-eDY' })), ai_critic_quote: 'عندما يلتقي الرعب بالكوميديا في قصر مسكون. هل ستضحك أم ستخاف؟' },
-            { id: 29, type: 'movie', title: 'المطاريد', year: 2023, genre: 'كوميدي, رياضة', poster: 'https://i.postimg.cc/4dBKTXx6/324253377_712761033732696_249607374389194024_n_596x800.webp', rating: 6.5, description: 'يعود صلاح من أمريكا لبيع ممتلكات والده، لكنه يكتشف أنه ورث نادي كرة قدم، فيقرر تكوين فريق من أصدقائه القدامى لخوض مغامرة كوميدية.', videoSrc: 'https://www.youtube.com/watch?v=J_jKj-SAa-4', externalWatchLink: 'https://ddy35s65h.dls4all.online/d/3yqk5dfsfsrnuwfu2f6n577cxu3bpigf35z5wc2tnxrslw2jphmm2i2tnfpgldbpffuk5ttl/video.mp4', ai_critic_quote: 'عندما تجتمع الكوميديا مع شغف كرة القدم، تكون النتيجة فريقًا لا يُقهر... في إثارة الضحك!'},
-            { id: 10, type: 'movie', title: 'الفيل الأزرق', year: 2014, genre: 'غموض, رعب', poster: 'https://i.postimg.cc/ry9V8wD0/5d4ebd021c2ef-185052-500x714.webp', rating: 8.0, description: 'بعد 5 سنوات من العزلة الاختيارية، يُستدعى الدكتور النفسي (يحيى) للعمل في مستشفى العباسية، حيث يجد في انتظاره مفاجأة ستغير حياته.', videoSrc: 'https://www.youtube.com/watch?v=I5Bat3GPqGc', externalWatchLink: 'https://fhd20a14.dls4all.online/d/2uqdilvsfsrnuwfu2r6i5px6vzxizbjduchezhoxdm74ighky2fkmzikyqaiosnqz6ofn2y2/video.mp4', ai_critic_quote: 'رحلة في عالم الجنون والهلاوس أكثر قتامة وإثارة. لا تشاهده وحيدًا.' }
-        ];
-        
-        let realData = [];
-
-        // --- DOM Elements ---
-        const sliderContainer = document.getElementById('slider-container');
-        const moviesGrid = document.getElementById('movies-grid');
-        const seriesGrid = document.getElementById('series-grid');
-        const topRatedList = document.getElementById('top-rated-list');
-        const detailsPage = document.getElementById('details-page');
-        const staticPage = document.getElementById('static-page');
-        const searchInput = document.getElementById('searchInput');
-        const notification = document.getElementById('notification');
-        const notificationMessage = document.getElementById('notification-message');
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const constructionBanner = document.getElementById('construction-banner');
-        const closeBannerBtn = document.getElementById('close-banner-btn');
-        const moodSelector = document.getElementById('mood-selector');
-        const userIdDisplay = document.getElementById('user-id-display');
-
-        let notificationTimeout;
-
-        // --- FIREBASE INITIALIZATION AND AUTH ---
-        if (Object.keys(firebaseConfig).length > 0) {
-            app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            auth = getAuth(app);
-            setLogLevel('debug'); // Enable Firestore logging
-
-            onAuthStateChanged(auth, async (user) => {
-                if (user) {
-                    userId = user.uid;
-                    isAuthReady = true;
-                    userIdDisplay.textContent = `مرحباً! ${userId.substring(0, 8)}...`;
-                    
-                    const lastSyncedVersion = localStorage.getItem('arabflexDataVersion');
-                    if (lastSyncedVersion !== SCRIPT_DATA_VERSION) {
-                        await syncDataWithFirestore();
-                    }
-                    setupOnSnapshotListener();
-
-                } else {
-                    try {
-                        if (initialAuthToken) {
-                            await signInWithCustomToken(auth, initialAuthToken);
-                        } else {
-                            await signInAnonymously(auth);
-                        }
-                    } catch (error) {
-                        console.error("Error during Firebase authentication:", error);
-                        showNotification('فشل تسجيل الدخول التلقائي.');
-                    }
-                }
-            });
-        } else {
-            console.error("Firebase config is missing. Falling back to initialData.");
-            realData = initialData; // Fallback if Firebase config is not provided
-            renderSlider();
-            renderContent(realData);
-            isAuthReady = true;
-        }
-
-        // --- DATA MANAGEMENT (Firestore) ---
-        async function syncDataWithFirestore() {
-            console.log(`Forcing data sync to version ${SCRIPT_DATA_VERSION}...`);
-            const contentCollectionRef = collection(db, `artifacts/${appId}/public/data/arabflexContent`);
-            const batch = writeBatch(db);
-            try {
-                initialData.forEach(item => {
-                    const docRef = doc(contentCollectionRef, String(item.id));
-                    const itemToSave = { ...item };
-                    if (itemToSave.episodes && Array.isArray(itemToSave.episodes)) {
-                        itemToSave.episodes = JSON.stringify(itemToSave.episodes);
-                    }
-                    batch.set(docRef, itemToSave);
-                });
-                
-                await batch.commit();
-                
-                console.log("Firestore sync complete.");
-                localStorage.setItem('arabflexDataVersion', SCRIPT_DATA_VERSION);
-            } catch (error) {
-                console.error("Error syncing data with Firestore:", error);
-                showNotification('حدث خطأ أثناء تحديث البيانات.');
-            }
-        }
-
-        function setupOnSnapshotListener() {
-            if (!db) return;
-            const contentCollectionRef = collection(db, `artifacts/${appId}/public/data/arabflexContent`);
-            onSnapshot(contentCollectionRef, (snapshot) => {
-                const fetchedData = [];
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    if (data.episodes && typeof data.episodes === 'string') {
-                        try {
-                            data.episodes = JSON.parse(data.episodes);
-                        } catch(e) {
-                            console.error("Failed to parse episodes for item:", data.id, e);
-                            data.episodes = [];
-                        }
-                    }
-                    fetchedData.push(data);
-                });
-                realData = fetchedData;
-                renderSlider();
-                renderContent(realData);
-                console.log("Data loaded/updated from Firestore:", realData.length, "items");
-            }, (error) => {
-                console.error("Error fetching data from Firestore:", error);
-                showNotification('فشل تحميل المحتوى من قاعدة البيانات.');
-            });
-        }
-      
-        // --- MOBILE MENU ---
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-        
-        window.closeMobileMenu = function() {
-            mobileMenu.classList.add('hidden');
-        }
-
-        // --- NOTIFICATION ---
-        function showNotification(message) {
-            clearTimeout(notificationTimeout);
-            notificationMessage.textContent = message;
-            notification.classList.remove('opacity-0', 'translate-y-10');
-            notification.classList.add('opacity-100', 'translate-y-0');
-
-            notificationTimeout = setTimeout(() => {
-                notification.classList.remove('opacity-100', 'translate-y-0');
-                notification.classList.add('opacity-0', 'translate-y-10');
-            }, 3000);
-        }
-
-        // --- SLIDER LOGIC ---
-        let currentSlide = 0;
-        
-        function renderSlider() {
-            const sliderItems = [...realData].sort((a, b) => b.year - a.year).slice(0, 5);
-            if (sliderItems.length === 0) {
-                sliderContainer.innerHTML = `<div class="w-full h-full bg-dark-secondary flex items-center justify-center"><p>جاري تحميل المحتوى...</p></div>`;
-                return;
-            };
-            sliderContainer.innerHTML = sliderItems.map((item, index) => `
-                <div class="slider-item ${index === currentSlide ? 'opacity-100' : 'opacity-0 pointer-events-none'}" style="background-image: url('${item.poster}'); background-size: cover; background-position: top center;">
-                    <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
-                    <div class="absolute bottom-0 right-0 p-4 md:p-10 text-white">
-                        <h2 class="text-2xl md:text-4xl font-bold">${item.title}</h2>
-                        <p class="text-sm md:text-base text-gray-300">${item.genre} - ${item.year}</p>
-                        <button data-id="${item.id}" class="slider-watch-btn mt-4 bg-amber-500 text-black font-bold py-2 px-6 rounded-full hover:bg-amber-600 transition duration-300 transform hover:scale-105">
-                            <i class="fa fa-play ml-2"></i>شاهد الآن
+                <div class="hidden md:flex items-center space-x-reverse space-x-8 text-base font-bold">
+                    <a href="#" onclick="showHomePage(); return false;" class="golden-text">الرئيسية</a>
+                    <a href="#movies-section" class="text-gray-300 hover:golden-text transition-colors">أفلام</a>
+                    <a href="#series-section" class="text-gray-300 hover:golden-text transition-colors">مسلسلات</a>
+                    <div class="relative dropdown">
+                        <button class="text-gray-300 hover:golden-text transition-colors flex items-center gap-1">
+                            تصنيفات <i class="fas fa-chevron-down text-xs"></i>
                         </button>
+                        <div class="dropdown-menu absolute hidden bg-[var(--background-light)] border border-[var(--border-color)] rounded-md mt-2 py-2 w-40 shadow-xl">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-[var(--border-color)] hover:golden-text">أكشن</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-[var(--border-color)] hover:golden-text">كوميدي</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-[var(--border-color)] hover:golden-text">دراما</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-[var(--border-color)] hover:golden-text">رعب</a>
+                        </div>
                     </div>
                 </div>
-            `).join('');
+                
+                <div class="relative">
+                    <input id="search-bar" type="text" placeholder="ابحث..." class="bg-gray-800 border border-gray-700 text-white rounded-full py-2 pr-10 pl-4 focus:outline-none focus:ring-2 focus:ring-[var(--brand-gold)] w-32 sm:w-40 md:w-56 transition-all duration-300">
+                    <i class="fas fa-search absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Experimental Notice -->
+    <div class="bg-gradient-to-r from-gray-900 to-black border-b-2 border-[var(--brand-gold)] text-center py-2 px-4 text-white font-bold flex items-center justify-center gap-3 text-sm sm:text-base">
+        <i class="fas fa-tools text-[var(--brand-gold)] animate-pulse" style="animation: pulse 2s infinite;"></i>
+        <span>تنويه: هذا الموقع تجريبي وتحت التطوير حالياً.</span>
+    </div>
+
+    <!-- Main Content -->
+    <main id="main-content-wrapper" class="relative">
+        <div id="home-page" class="page-transition">
+            <section id="hero-section">
+                <div id="slider-container">
+                    <!-- Slider items will be injected here -->
+                </div>
+                <div id="slider-dots" class="slider-dots"></div>
+                <button id="prev-slide" class="absolute top-1/2 -translate-y-1/2 left-4 bg-black/40 w-10 h-10 sm:w-12 sm:h-12 rounded-full hover:bg-black/70 transition-colors z-20 grid place-items-center"><i class="fas fa-chevron-left"></i></button>
+                <button id="next-slide" class="absolute top-1/2 -translate-y-1/2 right-4 bg-black/40 w-10 h-10 sm:w-12 sm:h-12 rounded-full hover:bg-black/70 transition-colors z-20 grid place-items-center"><i class="fas fa-chevron-right"></i></button>
+            </section>
+            
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+                    <div class="lg:col-span-9">
+                         <section id="movies-section" class="mb-12">
+                            <h2 class="section-title">الأفلام</h2>
+                            <div id="movies-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5"></div>
+                        </section>
+                        <section id="action-movies-section" class="mb-12">
+                            <h2 class="section-title">أفلام أكشن</h2>
+                            <div id="action-movies-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5"></div>
+                        </section>
+                        <section id="comedy-movies-section" class="mb-12">
+                            <h2 class="section-title">أفلام كوميدية</h2>
+                            <div id="comedy-movies-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5"></div>
+                        </section>
+                        <section id="series-section">
+                            <h2 class="section-title">المسلسلات</h2>
+                            <div id="series-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5"></div>
+                        </section>
+                    </div>
+                    <aside class="lg:col-span-3">
+                        <div class="bg-[var(--background-light)] p-6 rounded-lg sticky top-28 border border-[var(--border-color)]">
+                            <h3 class="section-title !text-xl !mb-6">الأعلى تقييماً</h3>
+                            <div id="top-rated-list" class="flex flex-col divide-y divide-[var(--border-color)]"></div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </div>
+        <div id="details-page" class="page-transition page-hidden"></div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black border-t border-[var(--border-color)] mt-8">
+        <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-gray-400">
+             <a href="#" onclick="showHomePage(); return false;" class="flex items-center justify-center gap-3 mb-4">
+                <span class="font-black text-3xl tracking-wider"><span class="golden-text">عرب</span> <span class="text-white">فليكس</span></span>
+            </a>
+            <div class="flex justify-center space-x-reverse space-x-6 mb-4 font-bold">
+                <a href="#" onclick="openModal('policy-modal'); return false;" class="hover:golden-text transition-colors">سياسة الاستخدام</a>
+                <a href="#" onclick="openModal('faq-modal'); return false;" class="hover:golden-text transition-colors">الأسئلة الشائعة</a>
+                <a href="#" onclick="openModal('contact-modal'); return false;" class="hover:golden-text transition-colors">اتصل بنا</a>
+            </div>
+            <p class="text-sm">&copy; 2025 عرب فليكس. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div id="video-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 transition-opacity duration-300 invisible opacity-0 modal"><div class="bg-gray-900 rounded-lg shadow-xl w-11/12 max-w-4xl relative transform transition-transform scale-95 modal-content"><div class="flex justify-between items-center p-4 border-b border-gray-700"><h3 id="video-modal-title" class="text-xl font-bold text-white"></h3><button onclick="closeWatchModal()" class="text-gray-400 hover:text-white text-2xl focus:outline-none">&times;</button></div><div class="p-1 bg-black"><div class="aspect-video"><video id="video-player" class="w-full h-full" controls autoplay></video></div></div></div></div>
+    <div id="contact-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 invisible opacity-0 modal"><div class="bg-[var(--background-light)] rounded-lg shadow-xl w-11/12 max-w-lg p-6 relative modal-content transform scale-95 border border-[var(--border-color)]"><button onclick="closeModal('contact-modal')" class="absolute top-4 left-4 text-gray-400 hover:text-white text-2xl">&times;</button><h2 class="text-2xl font-bold mb-4 golden-text">اتصل بنا</h2><p>للتواصل: <a href="mailto:arabfleex@gmail.com" class="text-lg font-bold text-amber-400 hover:underline">arabfleex@gmail.com</a></p></div></div>
+    <div id="policy-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 invisible opacity-0 modal"><div class="bg-[var(--background-light)] rounded-lg shadow-xl w-11/12 max-w-lg p-6 relative modal-content transform scale-95 border border-[var(--border-color)]"><button onclick="closeModal('policy-modal')" class="absolute top-4 left-4 text-gray-400 hover:text-white text-2xl">&times;</button><h2 class="text-2xl font-bold mb-4 golden-text">سياسة الاستخدام</h2><p class="text-sm">هذا الموقع تجريبي للعرض فقط. جميع المواد ملك لأصحابها ولا نستضيف أي ملفات على خوادمنا.</p></div></div>
+    <div id="faq-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 invisible opacity-0 modal"><div class="bg-[var(--background-light)] rounded-lg shadow-xl w-11/12 max-w-lg p-6 relative modal-content transform scale-95 border border-[var(--border-color)]"><button onclick="closeModal('faq-modal')" class="absolute top-4 left-4 text-gray-400 hover:text-white text-2xl">&times;</button><h2 class="text-2xl font-bold mb-4 golden-text">الأسئلة الشائعة</h2><p><strong>هل الموقع مجاني؟</strong><br>نعم، الموقع تجريبي ومجاني بالكامل.</p><p class="mt-4"><strong>هل أحتاج إلى تسجيل؟</strong><br>لا، لا يلزم التسجيل للمشاهدة.</p></div></div>
+
+    <script>
+        const db = {
+            movies: [
+                { id: 'welad-rezk-3', title: 'ولاد رزق 3: القاضية', year: 2024, genre: 'أكشن, جريمة', poster: 'https://i.postimg.cc/ZncfMNxF/Poster-Welad-Rizk-El_Qadia-EN-540x800.webp', description: 'بعد سنوات من انفصال الأخوة، يضطرون للعودة إلى حياة الجريمة والسرقة مرة أخرى في عملية هي الأكبر والأخطر في تاريخهم.', rating: 8.8, watchLink: 'https://www.w3schools.com/html/mov_bbb.mp4' },
+                { id: 'shakko', title: 'شقو', year: 2024, genre: 'أكشن, تشويق', poster: 'https://i.postimg.cc/nVmFN1Jk/images-1.jpg', description: 'مجموعة من الأصدقاء خارجين عن القانون يمارسون أعمالاً إجرامية مشبوهة، لكنها تقودهم إلى أزمات كبيرة.', rating: 8.2, watchLink: 'https://vsped-main2-vce.cdnz.quest/hls2/01/00180/2wmy2z4mpkl2_n/index-v1-a1.m3u8?t=w9kgXUsqAB2o83KctkXbg8DSsyW5Dra4bx4XUDq38NE&s=1759158492&e=43200&v=1057520&i=0.0&sp=0' },
+                { id: 'el-leab-maa-el-eyal', title: 'اللعب مع العيال', year: 2024, genre: 'كوميدي', poster: 'https://i.postimg.cc/wMrDtcwF/image.jpg', description: 'مدرس تاريخ يُنقل إلى منطقة صحراوية، فيواجه العديد من العقبات التي لم تكن في الحسبان.', rating: 7.5, watchLink: '#' },
+                { id: 'ahl-el-kahf', title: 'أهل الكهف', year: 2024, genre: 'فانتازيا, تاريخي', poster: 'https://i.postimg.cc/d1L2JxBD/x-Iiv-Uefce-D30w-Iy-ZAK1z55-SBv-TT-533x800.webp', description: 'صراع بين ثلاثة قساوسة وحاكم روماني، ينتهي بهروبهم واختبائهم في أحد الكهوف.', rating: 7.9, watchLink: '#' },
+                { id: 'kera-wel-gen', title: 'كيرة والجن', year: 2022, genre: 'تاريخي, دراما', poster: 'https://i.postimg.cc/dQG7GFLw/Poster-Keerah-Wel-Gen-540x800.webp', description: 'يرصد الفيلم حالة الغليان بالشارع المصري بالتزامن مع ثورة 1919، ويوحد مصائر كيرة والجن للنضال ضد المحتل.', rating: 9.0, watchLink: '#' },
+                { id: 'el-feel-el-azraq-2', title: 'الفيل الأزرق 2', year: 2019, genre: 'رعب, غموض', poster: 'https://i.postimg.cc/ry9V8wD0/5d4ebd021c2ef-185052-500x714.webp', description: 'بعد 5 سنوات، يتزوج (يحيى) من (لبنى)، ويتم استدعاؤه لقسم الحالات الخطرة، ليلتقي بمن يتلاعب بحياته وحياة أسرته.', rating: 8.7, watchLink: '#' },
+                { id: 'el-harifa', title: 'الحريفة', year: 2024, genre: 'دراما, رياضي', poster: 'https://i.postimg.cc/Vk9gNnCq/u-Nd-AFjr0gz-L4-Na-Jw1lpg-W5-On0-FM-533x800.webp', description: '(ماجد) يترك حياة الرخاء وينتقل لمدرسة حكومية، ويكتسب احترام زملائه بسبب مهارته في كرة القدم.', rating: 7.8, watchLink: 'https://vsped-fs4-eci.cdnz.quest/hls2/01/00174/gzyqj7swpsfs_n/index-v1-a1.m3u8?t=9yMATqNDlKeY812MWQg26FU_nTrpIPVWPnZiM7UpYaM&s=1759158753&e=43200&v=1063522&i=0.0&sp=0' },
+            ],
+            series: [
+                { id: 'saffah-el-giza', title: 'سفاح الجيزة', year: 2023, genre: 'جريمة, غموض', poster: 'https://i.postimg.cc/k4vmXTg3/Poster-The-Serial-Killer-540x800.webp', description: 'تدور أحداث المسلسل حول عدد من الجرائم الغامضة، والدوافع التي امتلكها جابر الذي وُصف لاحقًا بأنه قاتل متسلسل.', rating: 9.2, watchLink: '#' },
+                { id: 'gaafar-el-omda', title: 'جعفر العمدة', year: 2023, genre: 'دراما, تشويق', poster: 'https://i.postimg.cc/ZnYh96W9/242751-PNG.webp', description: 'قصة جعفر العمدة، الذي يمتلك عدة شركات للمقاولات، ويدخل في صراعات ويسعى للعثور على ابنه المفقود.', rating: 8.9, watchLink: '#' },
+                { id: 'ashghal-shaqa', title: 'أشغال شقة', year: 2024, genre: 'كوميدي', poster: 'https://i.postimg.cc/MTSwSCxm/scaled-600x800.webp', description: '(حمدي) و(ياسمين) يُرزقان بتوأم، ويقرران اﻻستعانة بمديرة منزل لرعاية الطفلين، وتقع لهما مفارقات كوميدية.', rating: 8.5, watchLink: '#' },
+                { id: 'el-beit-beity', title: 'البيت بيتي', year: 2022, genre: 'كوميدي, رعب', poster: 'https://i.postimg.cc/qvPQD0XQ/albait-baity-Poster2-ar-540x800.webp', description: 'يُجبر بينو على العودة إلى القاهرة لتسوية ميراثه، ولكن سرعان ما يصاب بالصدمة عند معرفته أن ما يرثه سيعرضه لمغامرات مرعبة.', rating: 8.6, watchLink: '#' },
+                { id: 'balto', title: 'بالطو', year: 2023, genre: 'كوميدي', poster: 'https://i.postimg.cc/XY8CB879/11675252737718-e1676444599414-625x800.webp', description: 'الطبيب الشاب (عاطف)، يُنقل في تكليفه إلى وحدة صحية بقرية نائية، ليجد نفسه فجأة مديرًا للوحدة ومسئولًا عن كل شيء.', rating: 8.4, watchLink: '#' },
+                { id: 'prestige', title: 'بريستيج', year: 2017, genre: 'دراما, تشويق', poster: 'https://i.postimg.cc/fb8RDqTh/640x-1ebae000d5ab11ce1b1e7c659848b228baef889c66a02f22d6ce879a8e9d9d87.jpg', description: 'جبل، رجل يعيش في قرية على الحدود، يدخل في صراعات عشائرية ومعارك للحفاظ على نفوذه وحماية عائلته.', rating: 8.7, watchLink: '#' },
+            ]
+        };
+
+        let hls;
+        const homePage = document.getElementById('home-page');
+        const detailsPage = document.getElementById('details-page');
+
+
+        function createCard(item, type, delay) {
+            return `<div class="card-container group" style="animation-delay: ${delay}ms" onclick="showDetailsPage('${item.id}', '${type}')">
+                <div class="card-image-wrapper">
+                    <img src="${item.poster}" alt="${item.title}" class="w-full aspect-[2/3] object-cover">
+                    <div class="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors"></div>
+                    <i class="card-play-icon fa-regular fa-circle-play"></i>
+                    <div class="absolute top-2 right-2 bg-black/60 text-amber-400 text-xs font-bold px-2 py-1 rounded-full backdrop-blur-sm flex items-center gap-1">
+                        <i class="fas fa-star text-xs"></i> ${item.rating}
+                    </div>
+                </div>
+                <div class="pt-3 text-center">
+                    <h3 class="font-bold text-sm sm:text-base text-white truncate group-hover:golden-text transition-colors">${item.title}</h3>
+                    <p class="text-xs text-gray-400">${item.year} - ${item.genre}</p>
+                </div>
+            </div>`;
+        }
+
+        function renderHomePage() {
+            document.getElementById('movies-grid').innerHTML = db.movies.map((m, i) => createCard(m, 'movies', i * 50)).join('');
+            document.getElementById('series-grid').innerHTML = db.series.map((s, i) => createCard(s, 'series', i * 50)).join('');
+            const actionMovies = db.movies.filter(m => m.genre.includes('أكشن') || m.genre.includes('جريمة'));
+            document.getElementById('action-movies-grid').innerHTML = actionMovies.map((m, i) => createCard(m, 'movies', i * 50)).join('');
+            const comedyMovies = db.movies.filter(m => m.genre.includes('كوميدي'));
+            document.getElementById('comedy-movies-grid').innerHTML = comedyMovies.map((m, i) => createCard(m, 'movies', i * 50)).join('');
+            const topRated = [...db.movies, ...db.series].sort((a, b) => b.rating - a.rating).slice(0, 5);
+            document.getElementById('top-rated-list').innerHTML = topRated.map(item => {
+                const type = db.movies.includes(item) ? 'movies' : 'series';
+                return `<div class="flex items-center space-x-reverse space-x-3 cursor-pointer group py-3" onclick="showDetailsPage('${item.id}', '${type}')">
+                    <img src="${item.poster}" class="w-12 h-20 object-cover rounded-md flex-shrink-0" alt="${item.title}">
+                    <div><h4 class="font-bold text-sm group-hover:golden-text transition-colors">${item.title}</h4><p class="text-xs text-gray-400">${item.genre}</p><p class="text-xs font-bold text-amber-400"><i class="fas fa-star text-xs"></i> ${item.rating}</p></div>
+                </div>`;
+            }).join('');
+        }
+        
+        function showDetailsPage(id, type) {
+            const content = db[type].find(item => item.id === id);
+            if (!content) return;
+            const hasValidLink = content.watchLink && content.watchLink !== '#';
+            detailsPage.innerHTML = `<div class="min-h-screen">
+                <div class="absolute inset-0 h-[60vh] -z-10"><img src="${content.poster}" class="w-full h-full object-cover opacity-20"><div class="absolute inset-0 bg-gradient-to-t from-[var(--background-dark)] via-[var(--background-dark)] to-transparent"></div></div>
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-20 relative">
+                    <button onclick="showHomePage()" class="mb-8 bg-black/50 hover:bg-black/80 font-bold py-2 px-5 rounded-full transition-colors backdrop-blur-sm"><i class="fas fa-arrow-right ml-2"></i> العودة</button>
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
+                        <div class="md:col-span-4 lg:col-span-3"><img src="${content.poster}" alt="${content.title}" class="w-full rounded-lg shadow-2xl shadow-black/50"></div>
+                        <div class="md:col-span-8 lg:col-span-9">
+                            <h1 class="text-4xl md:text-5xl lg:text-6xl font-black mb-2" style="color: var(--brand-gold-light);">${content.title}</h1>
+                            <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-300 mb-6 text-base sm:text-lg">
+                                <span><i class="fas fa-calendar-alt golden-text ml-1"></i> ${content.year}</span><span class="hidden sm:inline">|</span>
+                                <span><i class="fas fa-film golden-text ml-1"></i> ${content.genre}</span><span class="hidden sm:inline">|</span>
+                                <span><i class="fas fa-star golden-text ml-1"></i> ${content.rating}/10</span>
+                            </div>
+                            <p class="text-lg sm:text-xl leading-relaxed mb-8 max-w-3xl">${content.description}</p>
+                            <div class="flex flex-wrap gap-4 items-center">
+                                ${hasValidLink ? `<button onclick="openWatchModal('${content.watchLink}', '${content.title}')" class="btn-brand text-xl py-4 px-10 rounded-full"><i class="fas fa-play ml-3"></i> مشاهدة</button>` : '<p class="text-gray-500 text-lg">روابط المشاهدة غير متوفرة حالياً.</p>'}
+                            </div>
+                        </div>
+                    </div>
+                </div></div>`;
+            homePage.classList.add('page-hidden');
+            detailsPage.classList.remove('page-hidden');
+            window.scrollTo(0, 0);
+        }
+        function showHomePage() {
+            detailsPage.classList.add('page-hidden');
+            homePage.classList.remove('page-hidden');
+            window.scrollTo(0, 0);
+        }
+
+        function openModal(id) { const m=document.getElementById(id); m.classList.remove('invisible','opacity-0'); setTimeout(()=>m.querySelector('.modal-content').classList.remove('scale-95'),10); }
+        function closeModal(id) { const m=document.getElementById(id); m.querySelector('.modal-content').classList.add('scale-95'); m.classList.add('opacity-0'); setTimeout(()=>m.classList.add('invisible'),300); }
+        function openWatchModal(url, title) {
+            if (!url || url === '#') return;
+            const video = document.getElementById('video-player');
+            document.getElementById('video-modal-title').innerText = `مشاهدة: ${title}`;
+            if (hls) hls.destroy();
+            if (Hls.isSupported() && url.includes('.m3u8')) {
+                hls = new Hls(); hls.loadSource(url); hls.attachMedia(video);
+            } else { video.src = url; }
+            openModal('video-modal');
+        }
+        function closeWatchModal() {
+            const video = document.getElementById('video-player');
+            video.pause(); video.src = '';
+            if (hls) { hls.destroy(); hls = null; }
+            closeModal('video-modal');
+        }
+
+        // --- CINEMATIC SLIDER LOGIC ---
+        let sliderInterval;
+        let currentSlide = 0;
+        const sliderContainer = document.getElementById('slider-container');
+        const sliderDotsContainer = document.getElementById('slider-dots');
+        const sliderContent = [...db.movies].sort((a,b) => b.year - a.year);
+
+        function renderSlider() {
+            sliderContainer.innerHTML = sliderContent.map((item, index) => {
+                const type = 'movies';
+                return `<div class="slider-item" data-index="${index}">
+                    <img src="${item.poster}" class="slider-bg">
+                    <div class="slider-content container mx-auto">
+                        <div class="flex items-center gap-6 sm:gap-10">
+                            <img src="${item.poster}" class="slider-poster hidden sm:block">
+                            <div class="text-right">
+                                <h2 class="text-3xl sm:text-4xl md:text-5xl font-black mb-4">${item.title}</h2>
+                                <p class="text-base sm:text-lg text-gray-200 mb-6 hidden md:block max-w-lg">${item.description.substring(0, 120)}...</p>
+                                <button onclick="showDetailsPage('${item.id}', '${type}')" class="bg-[var(--brand-gold)] text-black font-bold py-2 px-6 sm:py-3 sm:px-8 rounded-full text-sm sm:text-base hover:scale-105 transition-transform">عرض التفاصيل</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+            
+            sliderDotsContainer.innerHTML = sliderContent.map((_, index) => 
+                `<button class="slider-dot" data-index="${index}"></button>`
+            ).join('');
+        }
+
+        function updateSlider() {
+            document.querySelectorAll('.slider-item').forEach((item, index) => {
+                item.classList.toggle('active', index === currentSlide);
+            });
+            document.querySelectorAll('.slider-dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+        
+        function changeSlide(index) {
+            currentSlide = index;
+            updateSlider();
+            resetInterval();
         }
 
         function nextSlide() {
-            const sliderItems = [...realData].sort((a, b) => b.year - a.year).slice(0, 5);
-            if (sliderItems.length === 0) return;
-            currentSlide = (currentSlide + 1) % sliderItems.length;
-            renderSlider();
+            currentSlide = (currentSlide + 1) % sliderContent.length;
+            updateSlider();
         }
 
-        // --- RENDERING FUNCTIONS ---
-        function createCard(item, index) {
-            return `
-                <div class="group cursor-pointer card-animate" style="animation-delay: ${index * 50}ms" onclick="showDetails(${item.id})">
-                    <div class="relative rounded-lg overflow-hidden transform group-hover:-translate-y-2 transition-transform duration-300 shadow-lg bg-[#1e1e1e] border-transparent aurora-card">
-                        <img src="${item.poster}" alt="${item.title}" class="w-full h-auto object-cover aspect-[2/3]" onerror="this.onerror=null;this.src='https://placehold.co/500x750/1e1e1e/f59e0b?text=Image+Not+Found';">
-                        <div class="absolute inset-0 bg-black/70 flex flex-col justify-end p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-full group-hover:translate-y-0">
-                               <h3 class="font-semibold text-white truncate">${item.title}</h3>
-                               <div class="flex gap-2 mt-3">
-                                 <button class="flex-1 bg-amber-500 text-black text-sm font-semibold py-1.5 px-3 rounded-md hover:bg-amber-600 transition duration-300">
-                                     <i class="fa fa-play"></i> مشاهدة
-                                 </button>
-                                 <button onclick="startDownload(event)" class="flex-1 bg-gray-700 text-white text-sm font-semibold py-1.5 px-3 rounded-md hover:bg-gray-600 transition duration-300">
-                                     <i class="fa fa-download"></i> تحميل
-                                 </button>
-                            </div>
-                        </div>
-                        <div class="absolute top-2 left-2 bg-amber-500 text-black text-xs font-bold px-2 py-1 rounded-md">${item.rating} <i class="fa fa-star text-xs"></i></div>
-                    </div>
-                    <div class="pt-2">
-                        <h3 class="font-semibold truncate text-white">${item.title}</h3>
-                        <p class="text-sm text-gray-400">${item.year}</p>
-                    </div>
-                </div>
-            `;
-        }
-        
-        function createTopRatedItem(item) {
-            return `
-                <div class="flex items-center gap-3 group cursor-pointer p-2 rounded-md hover:bg-gray-800 transition-colors" onclick="showDetails(${item.id})">
-                    <img src="${item.poster}" alt="${item.title}" class="w-16 h-24 object-cover rounded-md" onerror="this.onerror=null;this.src='https://placehold.co/200x300/1e1e1e/f59e0b?text=N/A';">
-                    <div>
-                        <h4 class="font-semibold group-hover:text-amber-500 transition text-white">${item.title}</h4>
-                        <p class="text-sm text-gray-400">${item.genre}</p>
-                        <p class="text-sm text-amber-500"><i class="fa fa-star ml-1"></i>${item.rating}</p>
-                    </div>
-                </div>
-            `;
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + sliderContent.length) % sliderContent.length;
+            updateSlider();
         }
 
-        function renderContent(data) {
-            moviesGrid.innerHTML = data.filter(i => i.type === 'movie').map((item, i) => createCard(item, i)).join('');
-            seriesGrid.innerHTML = data.filter(i => i.type === 'series').map((item, i) => createCard(item, i)).join('');
-            
-            const sortedByRating = [...data].sort((a, b) => b.rating - a.rating);
-            topRatedList.innerHTML = sortedByRating.slice(0, 5).map(createTopRatedItem).join('');
-
-            applyAuroraEffect();
+        function resetInterval() {
+            clearInterval(sliderInterval);
+            sliderInterval = setInterval(nextSlide, 5000);
         }
 
-        window.startDownload = function(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            showNotification('جارٍ بدء التحميل...');
-        }
-        
-        // --- NAVIGATION & PAGE LOGIC ---
-        window.smoothScrollTo = function(selector, event) {
-            event.preventDefault();
-            document.querySelector(selector).scrollIntoView({
-                behavior: 'smooth'
+        function initSliderEvents() {
+            document.getElementById('next-slide').addEventListener('click', () => { nextSlide(); resetInterval(); });
+            document.getElementById('prev-slide').addEventListener('click', () => { prevSlide(); resetInterval(); });
+            document.querySelectorAll('.slider-dot').forEach(dot => {
+                dot.addEventListener('click', () => changeSlide(parseInt(dot.dataset.index)));
             });
+            resetInterval();
         }
 
-        window.goHome = function(event) {
-            if (event) event.preventDefault();
-            if (!detailsPage.classList.contains('pointer-events-none')) {
-                hideDetails();
-            }
-              if (!staticPage.classList.contains('pointer-events-none')) {
-                hideStaticPage();
-            }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
 
-        window.showRandomSuggestion = function() {
-            if (realData.length > 0) {
-                const randomIndex = Math.floor(Math.random() * realData.length);
-                const randomItem = realData[randomIndex];
-                showDetails(randomItem.id);
-            } else {
-                showNotification("لا يوجد محتوى للاقتراح حاليًا.");
-            }
-        }
-        
-        window.showDetails = function(id) {
-            const item = realData.find(i => i.id === id);
-            if (!item) return;
-            
-            let actionSectionHtml = '';
-            let aiCriticHtml = item.ai_critic_quote ? `
-                <div class="mt-8 p-4 bg-black/20 backdrop-blur-sm rounded-lg border border-amber-500/30">
-                    <h3 class="text-xl font-semibold mb-3 flex items-center gap-2 text-amber-400">
-                        <i class="fa-solid fa-brain"></i>
-                        <span>رأي الناقد الذكي</span>
-                    </h3>
-                    <p class="text-gray-300 italic">"${item.ai_critic_quote}"</p>
-                </div>` : '';
-
-            if (item.type === 'series' && item.episodes) {
-                actionSectionHtml = `
-                    <div class="mt-8">
-                        <h3 class="text-2xl font-semibold border-r-4 border-amber-500 pr-4 mb-4">مشاهدة</h3>
-                        <div class="flex flex-wrap gap-3 mb-4">
-                            <button onclick="playVideo('${item.videoSrc}')" class="bg-white/10 py-2 px-5 rounded-lg hover:bg-amber-500 hover:text-black transition transform hover:scale-105 backdrop-blur-sm"><i class="fa-solid fa-clapperboard ml-2"></i>مشاهدة الإعلان</button>
-                        </div>
-                    </div>
-                       <div class="mt-8">
-                        <h3 class="text-2xl font-semibold border-r-4 border-amber-500 pr-4 mb-4">الحلقات</h3>
-                        <div class="episode-list grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2 max-h-60 overflow-y-auto pr-2">
-                            ${item.episodes.map(ep => `
-                                <button onclick="playVideo('${ep.videoSrc}')" class="text-white bg-white/10 text-center py-2 px-1 rounded-lg hover:bg-amber-500 hover:text-black transition duration-300 focus:outline-none focus:ring-2 focus:ring-amber-500 transform hover:scale-110">
-                                    ${ep.number}
-                                </button>
-                            `).join('')}
-                        </div>
-                    </div>`;
-            } else { // It's a movie
-                let watchButtonsHtml = `<button onclick="playVideo('${item.videoSrc}')" class="bg-white/10 py-2 px-5 rounded-lg hover:bg-amber-500 hover:text-black transition transform hover:scale-105 backdrop-blur-sm shadow-lg shadow-amber-500/10 hover:shadow-amber-500/30"><i class="fa-solid fa-play ml-2"></i>الإعلان الرسمي</button>`;
-
-                if (item.externalWatchLink) {
-                    watchButtonsHtml += `<button onclick="playVideo('${item.externalWatchLink}')" class="bg-gradient-to-br from-amber-500 to-amber-600 text-black font-bold py-2 px-5 rounded-lg hover:from-amber-600 hover:to-amber-700 transition transform hover:scale-105 backdrop-blur-sm shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50"><i class="fa-solid fa-film ml-2"></i>مشاهدة الفيلم</button>`;
-                }
-
-                actionSectionHtml = `
-                    <div class="mt-8">
-                        <h3 class="text-2xl font-semibold border-r-4 border-amber-500 pr-4 mb-4">شاهد الآن</h3>
-                        <div class="flex flex-wrap gap-3">
-                            ${watchButtonsHtml}
-                        </div>
-                    </div>
-                    <div class="mt-8">
-                        <h3 class="text-2xl font-semibold border-r-4 border-amber-500 pr-4 mb-4">روابط التحميل</h3>
-                        <div class="space-y-3">
-                            <a href="#" onclick="startDownload(event)" class="flex justify-between items-center p-3 bg-white/10 rounded-lg hover:bg-white/20 transition backdrop-blur-sm"><span>تحميل بجودة 1080p</span><i class="fa fa-download"></i></a>
-                            <a href="#" onclick="startDownload(event)" class="flex justify-between items-center p-3 bg-white/10 rounded-lg hover:bg-white/20 transition backdrop-blur-sm"><span>تحميل بجودة 720p</span><i class="fa fa-download"></i></a>
-                        </div>
-                    </div>`;
-            }
-
-            detailsPage.innerHTML = `
-                <button onclick="hideDetails()" class="fixed top-6 left-6 z-[70] text-2xl bg-black/50 w-10 h-10 rounded-full hover:bg-amber-500 hover:text-black transition-all duration-300 flex items-center justify-center">
-                    <i class="fa fa-arrow-left"></i>
-                </button>
-                <div class="min-h-screen py-10 md:py-20 details-backdrop" style="background-image: url('${item.poster}');">
-                    <div class="container mx-auto px-4 z-10 relative">
-                        <div class="flex flex-col md:flex-row gap-8">
-                            <div class="md:w-1/3 flex-shrink-0">
-                                <img src="${item.poster}" alt="${item.title}" class="rounded-xl shadow-2xl shadow-black/50 w-full" onerror="this.onerror=null;this.src='https://placehold.co/500x750/1e1e1e/f59e0b?text=Image+Not+Found';">
-                            </div>
-                            <div class="md:w-2/3 text-white">
-                                <div id="player-wrapper" class="hidden mb-6 bg-black rounded-lg overflow-hidden shadow-lg aspect-video">
-                                    <!-- Player (video or iframe) will be injected here -->
-                                </div>
-                                <h2 class="text-4xl lg:text-5xl font-bold">${item.title} (${item.year})</h2>
-                                <div class="flex items-center gap-4 my-4 text-gray-300">
-                                    <span>${item.genre}</span>
-                                    <span class="w-1 h-1 bg-gray-400 rounded-full"></span>
-                                    <span class="text-amber-500 font-bold text-lg"><i class="fa fa-star ml-1"></i>${item.rating} / 10</span>
-                                </div>
-                                <p class="leading-relaxed text-gray-200">${item.description}</p>
-                                ${aiCriticHtml}
-                                ${actionSectionHtml}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            detailsPage.classList.remove('hidden', 'pointer-events-none', 'opacity-0');
-            document.body.style.overflow = 'hidden'; 
-        }
-        
-        function getYouTubeID(url){
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
-            return (match && match[2].length === 11) ? match[2] : null;
-        }
-
-        function getDailymotionID(url) {
-            const m = url.match(/^.+dailymotion.com\/(video|hub|player.html)\?video=([^_?]+)/) || url.match(/dai.ly\/([^_?]+)/) || url.match(/^https:\/\/geo\.dailymotion\.com\/player\.html\?video=([^_?]+)/);
-            return m ? m[m.length - 1] : null;
-        }
-
-        window.playVideo = function(src) {
-            const playerWrapper = document.getElementById('player-wrapper');
-            if (!playerWrapper) return;
-
-            // Destroy previous HLS instance if it exists
-            if (hlsInstance) {
-                hlsInstance.destroy();
-                hlsInstance = null;
-            }
-
-            playerWrapper.innerHTML = ''; // Clear previous content
-            playerWrapper.classList.remove('aspect-video');
-            
-            const youtubeId = getYouTubeID(src);
-            const dailymotionId = getDailymotionID(src);
-
-            if (youtubeId) {
-                playerWrapper.classList.add('aspect-video');
-                playerWrapper.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${youtubeId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>`;
-            } else if (dailymotionId) {
-                playerWrapper.classList.add('aspect-video');
-                playerWrapper.innerHTML = `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;">
-                    <iframe src="https://geo.dailymotion.com/player.html?video=${dailymotionId}&autoplay=1"
-                    style="width:100%; height:100%; position:absolute; left:0px; top:0px; overflow:hidden; border:none;"
-                    allow="autoplay; fullscreen; web-share" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true">
-                    </iframe></div>`;
-            } else if (src.includes('.m3u8')) {
-                playerWrapper.classList.add('aspect-video');
-                const video = document.createElement('video');
-                video.id = 'video-player';
-                video.className = 'w-full h-full';
-                video.controls = true;
-                video.autoplay = true;
-                video.setAttribute('playsinline', ''); // Add playsinline for iOS fullscreen
-                playerWrapper.appendChild(video);
-
-                if (Hls.isSupported()) {
-                    hlsInstance = new Hls();
-                    hlsInstance.loadSource(src);
-                    hlsInstance.attachMedia(video);
-                    hlsInstance.on(Hls.Events.MANIFEST_PARSED, function() {
-                        video.play();
-                    });
-                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                    video.src = src;
-                    video.addEventListener('loadedmetadata', function() {
-                        video.play();
-                    });
-                }
-            } else { // MP4 or other direct video
-                playerWrapper.classList.add('aspect-video');
-                playerWrapper.innerHTML = `<video id="video-player" class="w-full h-full" controls autoplay allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"><source src="${src}" type="video/mp4">Your browser does not support the video tag.</video>`;
-            }
-
-            playerWrapper.classList.remove('hidden');
-            playerWrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-
-        window.hideDetails = function() {
-            // Destroy HLS instance on closing details page
-            if (hlsInstance) {
-                hlsInstance.destroy();
-                hlsInstance = null;
-            }
-            detailsPage.classList.add('opacity-0');
-            setTimeout(() => {
-                detailsPage.classList.add('pointer-events-none', 'hidden');
-                const playerWrapper = document.getElementById('player-wrapper');
-                if (playerWrapper) {
-                    playerWrapper.innerHTML = '';
-                    playerWrapper.classList.add('hidden');
-                }
-                 if (document.fullscreenElement) {
-                    document.exitFullscreen();
-                }
-            }, 300);
-            document.body.style.overflow = '';
-        }
-
-        // --- STATIC PAGE LOGIC ---
-        const staticContent = {
-            'about': {
-                title: 'عن عرب فليكس',
-                content: 'عرب فليكس هو وجهتك الأولى لمشاهدة وتحميل أحدث وأفضل الأفلام والمسلسلات العربية. نسعى لتقديم تجربة مشاهدة ممتعة وسلسة لجميع مستخدمينا، مع مكتبة ضخمة من المحتوى المتجدد باستمرار. تصميمنا يركز على سهولة الاستخدام وسرعة الوصول للمحتوى الذي تحبه.'
-            },
-            'contact': {
-                title: 'اتصل بنا',
-                content: 'نحن نرحب دائمًا بآرائكم واقتراحاتكم. إذا واجهت أي مشكلة أو كان لديك أي استفسار، لا تتردد في التواصل معنا عبر البريد الإلكتروني الرسمي: <br> <a href="mailto:arabfleex@gmail.com" class="text-amber-500">arabfleex@gmail.com</a>'
-            },
-            'policy': {
-                title: 'سياسة الاستخدام والخصوصية',
-                content: 'موقع عرب فليكس هو واجهة عرض لأغراض تجريبية وتعليمية فقط. جميع المواد المعروضة هي مجرد محاكاة ولا تحتوي على أي محتوى حقيقي مقرصن. نحن لا نستضيف أي فيديوهات على خوادمنا. نحن نحترم حقوق الملكية الفكرية وندعو مستخدمينا لاحترامها أيضًا. استخدامك للموقع يعني موافقتك على هذه الشروط.'
-            }
-        };
-
-        window.showStaticPage = function(pageKey, event) {
-            event.preventDefault();
-            const pageData = staticContent[pageKey];
-            if (!pageData) return;
-
-            staticPage.innerHTML = `
-                <div class="bg-[#1e1e1e] rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 md:p-8 relative transform transition-all duration-300 scale-95 opacity-0" id="static-content-box">
-                    <button onclick="hideStaticPage()" class="absolute top-4 left-4 text-2xl text-gray-400 hover:text-white transition-colors">
-                        <i class="fa fa-times"></i>
-                    </button>
-                    <h2 class="text-3xl font-bold text-amber-500 mb-6">${pageData.title}</h2>
-                    <div class="text-gray-300 leading-relaxed space-y-4">
-                       <p>${pageData.content}</p>
-                    </div>
-                </div>
-            `;
-            staticPage.classList.remove('hidden', 'pointer-events-none', 'opacity-0');
-            document.body.style.overflow = 'hidden';
-            setTimeout(() => {
-                document.getElementById('static-content-box').classList.remove('scale-95', 'opacity-0');
-            }, 10);
-        }
-
-        window.hideStaticPage = function() {
-            const contentBox = document.getElementById('static-content-box');
-            if (contentBox) {
-                contentBox.classList.add('scale-95', 'opacity-0');
-            }
-            staticPage.classList.add('opacity-0');
-            setTimeout(() => {
-                staticPage.classList.add('pointer-events-none', 'hidden');
-            }, 300);
-            document.body.style.overflow = '';
-        }
-
-        // --- SEARCH/FILTER LOGIC ---
-        searchInput.addEventListener('keyup', (e) => {
-            const searchTerm = e.target.value.toLowerCase().trim();
-            const filteredData = realData.filter(item => 
-                item.title.toLowerCase().includes(searchTerm)
-            );
-            renderContent(filteredData);
-        });
-
-        // --- AURORA EFFECT ---
-        function applyAuroraEffect() {
-            const cards = document.querySelectorAll('.aurora-card');
-            cards.forEach(card => {
-                card.addEventListener('mousemove', e => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    card.style.setProperty('--x', `${x}px`);
-                    card.style.setProperty('--y', `${y}px`);
-                });
-            });
-        }
-        
-        // --- MOOD SELECTOR ---
-        moodSelector.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON') {
-                const genre = e.target.dataset.genre;
-                
-                document.querySelectorAll('.mood-selector button').forEach(btn => btn.classList.remove('active'));
-                e.target.classList.add('active');
-
-                if (genre === 'all') {
-                    renderContent(realData);
-                } else {
-                    const filteredData = realData.filter(item => item.genre.includes(genre));
-                    renderContent(filteredData);
-                }
-            }
-        });
-
-
-        // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Construction Banner Logic
-            if (localStorage.getItem('arabflexBannerClosed') === 'true') {
-                constructionBanner.classList.add('hidden');
-            }
-            closeBannerBtn.addEventListener('click', () => {
-                constructionBanner.classList.add('hidden');
-                localStorage.setItem('arabflexBannerClosed', 'true');
-            });
-
-            // Slider click event listener
-            sliderContainer.addEventListener('click', (event) => {
-                const watchButton = event.target.closest('.slider-watch-btn');
-                if (watchButton) {
-                    const id = parseInt(watchButton.dataset.id, 10);
-                    if (!isNaN(id)) {
-                        showDetails(id);
-                    }
-                }
-            });
-            // Start the slider interval only after initial data is loaded
-            setInterval(nextSlide, 5000);
+            renderHomePage();
+            renderSlider();
+            updateSlider();
+            initSliderEvents();
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeWatchModal(); });
         });
-
     </script>
 </body>
 </html>
