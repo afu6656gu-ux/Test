@@ -3,7 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
-    <title>عرب فليكس </title>
+    <title>عرب فليكس - Arab Fleex</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -155,16 +155,16 @@
     <header class="bg-black/80 backdrop-blur-lg shadow-lg sticky top-0 z-40 border-b border-[var(--border-color)]">
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                <a href="#" class="flex items-center gap-3">
+                <a href="#" onclick="showHomePage(); return false;" class="flex items-center gap-3">
                     <span class="font-black text-2xl sm:text-3xl tracking-wider">
                         <span class="golden-text">عرب</span> <span class="text-white">فليكس</span>
                     </span>
                 </a>
                 
                 <div class="hidden md:flex items-center space-x-reverse space-x-8 text-base font-bold">
-                    <a href="#" class="golden-text">الرئيسية</a>
-                    <a href="#movies-section" class="text-gray-300 hover:golden-text transition-colors">أفلام</a>
-                    <a href="#series-section" class="text-gray-300 hover:golden-text transition-colors">مسلسلات</a>
+                    <a href="#" onclick="showHomePage(); return false;" class="golden-text">الرئيسية</a>
+                    <a href="#movies-section" onclick="scrollToSection('movies-section'); return false;" class="text-gray-300 hover:golden-text transition-colors">أفلام</a>
+                    <a href="#series-section" onclick="scrollToSection('series-section'); return false;" class="text-gray-300 hover:golden-text transition-colors">مسلسلات</a>
                 </div>
                 
                 <div class="flex items-center gap-4">
@@ -182,9 +182,9 @@
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden md:hidden bg-black/90 backdrop-blur-sm absolute top-20 right-0 left-0">
             <div class="flex flex-col items-center space-y-4 py-6 font-bold">
-                 <a href="#" class="golden-text" onclick="toggleMenu()">الرئيسية</a>
-                 <a href="#movies-section" class="text-gray-300 hover:golden-text transition-colors" onclick="toggleMenu()">أفلام</a>
-                 <a href="#series-section" class="text-gray-300 hover:golden-text transition-colors" onclick="toggleMenu()">مسلسلات</a>
+                 <a href="#" onclick="showHomePage(); toggleMenu(); return false;" class="golden-text">الرئيسية</a>
+                 <a href="#movies-section" onclick="scrollToSection('movies-section'); toggleMenu(); return false;" class="text-gray-300 hover:golden-text transition-colors">أفلام</a>
+                 <a href="#series-section" onclick="scrollToSection('series-section'); toggleMenu(); return false;" class="text-gray-300 hover:golden-text transition-colors">مسلسلات</a>
             </div>
         </div>
     </header>
@@ -261,7 +261,25 @@
                 { id: 'rambo-exit', title: 'البحث عن منفذ لخروج السيد رامبو', year: 2024, genre: 'كوميدي, دراما', poster: 'https://i.ibb.co/dw96pmxr/366a4e10-1d4b-4b09-a0fa-7118a3cbe4e7-540x800.webp', description: 'في إطار كوميدي، يحاول شاب إيجاد مخرج من المواقف الصعبة التي يضع نفسه فيها.', rating: 7.9, watchLink: 'https://hls2-cdn13.strmupcdn.cc/hls/TYIBl37sf2I1Gr3iEedSajw8m8e2Bx/index_1920x1080.m3u8?token=723f47e1a17bdddb3c0fa0877ee02ad0-1759227441-197.35.77.8-9e6055bf1255544f6d76dc3b460db2772735f031f3acbdc47d868734ad561b31' }
             ],
             series: [
-                { id: 'saffah-el-giza', title: 'سفاح الجيزة', year: 2023, genre: 'جريمة, غموض', poster: 'https://i.postimg.cc/k4vmXTg3/Poster-The-Serial-Killer-540x800.webp', description: 'تدور أحداث المسلسل حول عدد من الجرائم الغامضة، والدوافع التي امتلكها جابر الذي وُصف لاحقًا بأنه قاتل متسلسل.', rating: 9.2, watchLink: '#' },
+                 { 
+                    id: 'saffah-el-giza', 
+                    title: 'سفاح الجيزة', 
+                    year: 2023, 
+                    genre: 'جريمة, غموض', 
+                    poster: 'https://i.postimg.cc/k4vmXTg3/Poster-The-Serial-Killer-540x800.webp', 
+                    description: 'تدور أحداث المسلسل حول عدد من الجرائم الغامضة، والدوافع التي امتلكها جابر الذي وُصف لاحقًا بأنه قاتل متسلسل.', 
+                    rating: 9.2, 
+                    episodes: [
+                        { title: 'الحلقة 1', watchLink: 'https://vsped-store4-omv.cdnz.quest/hls2/01/00136/w8zoi2n81tp4_n/index-v1-a1.m3u8?t=gBmyBrqCyuRWb4Rx7PY6oxbvqIrzIUZPbb-htgxRAEI&s=1759200439&e=43200&v=281671&i=0.0&sp=0' },
+                        { title: 'الحلقة 2', watchLink: 'https://nox7-04.ukra1.shop/hls/pdompucto6m4f4kmle5sdo3apnwyaaelx5zb4gswandjkdanhmmfnuhupzha/index-v1-a1.m3u8' },
+                        { title: 'الحلقة 3', watchLink: 'https://vsped-fs3-rfu.cdnz.quest/hls2/02/00136/3fh76x9gly4z_n/index-v1-a1.m3u8?t=IHBCJAqH5GoGDY5Nbki6xEx5ldoRD0Gpo9EDsr2JW7c&s=1759200643&e=43200&v=283666&i=0.0&sp=0' },
+                        { title: 'الحلقة 4', watchLink: 'https://vsped-fs3-rfu.cdnz.quest/hls2/01/00136/c93doo28xdp0_l/index-v1-a1.m3u8?t=QR2puxpJ2FpNdkiodUtJMXHqaVCqfZ9mTboku7PJf8M&s=1759200663&e=43200&v=283905&i=0.0&sp=0' },
+                        { title: 'الحلقة 5', watchLink: 'https://vsped-store2-fxa.cdnz.quest/hls2/01/00136/n2kpnhhxftme_n/index-v1-a1.m3u8?t=Xh5UovaEuTdiEX9hiWtHoMXnoHHTIjpolgpKOIuCId4&s=1759200692&e=43200&v=284176&i=0.0&sp=0' },
+                        { title: 'الحلقة 6', watchLink: 'https://vsped-fs1-lhm.cdnz.quest/hls2/02/00136/nb3kbsnxz9kv_n/index-v1-a1.m3u8?t=vpC5WNNipozHSKJiLCiMs8iPYaiuzAVXvN0I-FPPGDE&s=1759200710&e=43200&v=284330&i=0.0&sp=0' },
+                        { title: 'الحلقة 7', watchLink: 'https://vsped-store2-fxa.cdnz.quest/hls2/02/00137/60knijeig5lq_n/index-v1-a1.m3u8?t=dWMkY6aVl2GbR3QgjJ88NzdRiVFKMuZYu2aHqiojVio&s=1759200729&e=43200&v=284503&i=0.0&sp=0' },
+                        { title: 'الحلقة 8', watchLink: 'https://vsped-store2-fxa.cdnz.quest/hls2/02/00137/hm9xrvrddbzd_n/index-v1-a1.m3u8?t=EBng38qildBuERI8EA7vCUMth1cXRJGoTfsBkCRhA8Q&s=1759200750&e=43200&v=281421&i=0.0&sp=0' }
+                    ]
+                 },
                 { id: 'gaafar-el-omda', title: 'جعفر العمدة', year: 2023, genre: 'دراما, تشويق', poster: 'https://i.postimg.cc/ZnYh96W9/242751-PNG.webp', description: 'قصة جعفر العمدة، الذي يمتلك عدة شركات للمقاولات، ويدخل في صراعات ويسعى للعثور على ابنه المفقود.', rating: 8.9, watchLink: '#' },
                 { id: 'ashghal-shaqa', title: 'أشغال شقة', year: 2024, genre: 'كوميدي', poster: 'https://i.postimg.cc/MTSwSCxm/scaled-600x800.webp', description: '(حمدي) و(ياسمين) يُرزقان بتوأم، ويقرران اﻻستعانة بمديرة منزل لرعاية الطفلين، وتقع لهما مفارقات كوميدية.', rating: 8.5, watchLink: '#' },
                 { id: 'el-beit-beity', title: 'البيت بيتي', year: 2022, genre: 'كوميدي, رعب', poster: 'https://i.postimg.cc/qvPQD0XQ/albait-baity-Poster2-ar-540x800.webp', description: 'يُجبر بينو على العودة إلى القاهرة لتسوية ميراثه، ولكن سرعان ما يصاب بالصدمة عند معرفته أن ما يرثه سيعرضه لمغامرات مرعبة.', rating: 8.6, watchLink: '#' },
@@ -302,10 +320,31 @@
         }
         
         function showDetailsPage(id, type) {
+            location.hash = `details/${type}/${id}`;
+        }
+        
+        function _renderDetailsPage(id, type) {
             const content = db[type].find(item => item.id === id);
             if (!content) return;
             
-            const hasValidLink = content.watchLink && content.watchLink !== '#';
+            let watchSectionHTML;
+            if (type === 'series' && content.episodes && content.episodes.length > 0) {
+                 watchSectionHTML = `
+                    <h3 class="text-2xl font-bold mb-4 text-white mt-8">الحلقات</h3>
+                    <div class="flex flex-wrap gap-3">
+                        ${content.episodes.map(ep => `
+                            <button onclick="embedPlayer('${ep.watchLink}')" class="bg-gray-700 hover:bg-amber-500 hover:text-black text-white font-bold py-2 px-4 rounded-md transition-colors">${ep.title}</button>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                 const hasValidLink = content.watchLink && content.watchLink !== '#';
+                 watchSectionHTML = `
+                    <div class="flex flex-wrap gap-4 items-center">
+                        ${hasValidLink ? `<button id="watch-btn" onclick="embedPlayer('${content.watchLink}')" class="bg-amber-500 text-black font-bold py-3 px-8 rounded-full text-lg hover:scale-105 transition-transform"><i class="fas fa-play ml-2"></i> مشاهدة الفيلم</button>` : '<p class="text-gray-500 text-lg">روابط المشاهدة غير متوفرة حالياً.</p>'}
+                    </div>`;
+            }
+
             detailsPage.innerHTML = `<div class="min-h-screen">
                 <div class="absolute inset-0 h-[60vh] -z-10"><img src="${content.poster}" class="w-full h-full object-cover opacity-20"><div class="absolute inset-0 bg-gradient-to-t from-[var(--background-dark)] via-[var(--background-dark)] to-transparent"></div></div>
                 <div class="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-20 relative">
@@ -322,9 +361,7 @@
                             </div>
                             <p class="text-lg sm:text-xl leading-relaxed mb-8 max-w-3xl">${content.description}</p>
                             <div id="player-wrapper" class="mb-6"></div>
-                            <div class="flex flex-wrap gap-4 items-center">
-                                ${hasValidLink ? `<button id="watch-btn" onclick="embedPlayer('${content.watchLink}')" class="bg-amber-500 text-black font-bold py-3 px-8 rounded-full text-lg hover:scale-105 transition-transform"><i class="fas fa-play ml-2"></i> مشاهدة الفيلم</button>` : '<p class="text-gray-500 text-lg">روابط المشاهدة غير متوفرة حالياً.</p>'}
-                            </div>
+                            ${watchSectionHTML}
                         </div>
                     </div>
                 </div></div>`;
@@ -336,7 +373,7 @@
         function embedPlayer(url) {
             const playerWrapper = document.getElementById('player-wrapper');
             const watchBtn = document.getElementById('watch-btn');
-            if(!playerWrapper || !watchBtn) return;
+            if(!playerWrapper) return;
 
             playerWrapper.innerHTML = `<div class="aspect-video bg-black rounded-lg overflow-hidden"><video id="embedded-player" class="w-full h-full" controls autoplay></video></div>`;
             const video = document.getElementById('embedded-player');
@@ -350,7 +387,7 @@
             } else {
                 video.src = url;
             }
-            watchBtn.style.display = 'none';
+            if(watchBtn) watchBtn.style.display = 'none';
         }
 
         function openModal(id) { 
@@ -466,7 +503,7 @@
                 if (hash.startsWith('#details/')) {
                     const [, type, id] = hash.split('/');
                     if (id && type) {
-                        showDetailsPage(id, type, false);
+                        _renderDetailsPage(id, type);
                     } else {
                         showHomePage();
                     }
