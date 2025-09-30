@@ -155,16 +155,16 @@
     <header class="bg-black/80 backdrop-blur-lg shadow-lg sticky top-0 z-40 border-b border-[var(--border-color)]">
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                <a href="#" onclick="showHomePage(); return false;" class="flex items-center gap-3">
+                <a href="#" class="flex items-center gap-3">
                     <span class="font-black text-2xl sm:text-3xl tracking-wider">
                         <span class="golden-text">عرب</span> <span class="text-white">فليكس</span>
                     </span>
                 </a>
                 
                 <div class="hidden md:flex items-center space-x-reverse space-x-8 text-base font-bold">
-                    <a href="#" onclick="scrollToSection('home-page'); return false;" class="golden-text">الرئيسية</a>
-                    <a href="#" onclick="scrollToSection('movies-section'); return false;" class="text-gray-300 hover:golden-text transition-colors">أفلام</a>
-                    <a href="#" onclick="scrollToSection('series-section'); return false;" class="text-gray-300 hover:golden-text transition-colors">مسلسلات</a>
+                    <a href="#" class="golden-text">الرئيسية</a>
+                    <a href="#movies-section" class="text-gray-300 hover:golden-text transition-colors">أفلام</a>
+                    <a href="#series-section" class="text-gray-300 hover:golden-text transition-colors">مسلسلات</a>
                 </div>
                 
                 <div class="flex items-center gap-4">
@@ -182,9 +182,9 @@
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden md:hidden bg-black/90 backdrop-blur-sm absolute top-20 right-0 left-0">
             <div class="flex flex-col items-center space-y-4 py-6 font-bold">
-                 <a href="#" onclick="scrollToSection('home-page'); toggleMenu(); return false;" class="golden-text">الرئيسية</a>
-                 <a href="#" onclick="scrollToSection('movies-section'); toggleMenu(); return false;" class="text-gray-300 hover:golden-text transition-colors">أفلام</a>
-                 <a href="#" onclick="scrollToSection('series-section'); toggleMenu(); return false;" class="text-gray-300 hover:golden-text transition-colors">مسلسلات</a>
+                 <a href="#" class="golden-text" onclick="toggleMenu()">الرئيسية</a>
+                 <a href="#movies-section" class="text-gray-300 hover:golden-text transition-colors" onclick="toggleMenu()">أفلام</a>
+                 <a href="#series-section" class="text-gray-300 hover:golden-text transition-colors" onclick="toggleMenu()">مسلسلات</a>
             </div>
         </div>
     </header>
@@ -226,7 +226,7 @@
     <!-- Footer, Modals, etc. -->
     <footer class="bg-black border-t border-[var(--border-color)] mt-8">
          <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-gray-400">
-             <a href="#" onclick="showHomePage(); return false;" class="flex items-center justify-center gap-3 mb-4">
+             <a href="#" class="flex items-center justify-center gap-3 mb-4">
                 <span class="font-black text-3xl tracking-wider"><span class="golden-text">عرب</span> <span class="text-white">فليكس</span></span>
             </a>
             <div class="flex justify-center space-x-reverse space-x-6 mb-4 font-bold">
@@ -247,11 +247,11 @@
                 { id: 'welad-rezk-3', title: 'ولاد رزق 3: القاضية', year: 2024, genre: 'أكشن, جريمة', poster: 'https://i.postimg.cc/ZncfMNxF/Poster-Welad-Rizk-El_Qadia-EN-540x800.webp', description: 'بعد سنوات من انفصال الأخوة، يضطرون للعودة إلى حياة الجريمة والسرقة مرة أخرى في عملية هي الأكبر والأخطر في تاريخهم.', rating: 8.8, watchLink: 'https://2ith458pz9.guardstorage.net/hls_3/IeRrT61GaO0cDMvRRmckxr_NzpylNidG6f9j3ewvUbRibxH4MzvrAYJRPvi751rhaH-wfVJf-9wZoOErRxXvug/index-f3-v1-a1.m3u8?sig=sQbePN-_DxTGBzPmlR5Vfg&expires=1759204892' },
                 { id: 'shakko', title: 'شقو', year: 2024, genre: 'أكشن, تشويق', poster: 'https://i.postimg.cc/nVmFN1Jk/images-1.jpg', description: 'مجموعة من الأصدقاء خارجين عن القانون يمارسون أعمالاً إجرامية مشبوهة، لكنها تقودهم إلى أزمات كبيرة.', rating: 8.2, watchLink: 'https://vsped-main2-vce.cdnz.quest/hls2/01/00180/2wmy2z4mpkl2_n/index-v1-a1.m3u8?t=w9kgXUsqAB2o83KctkXbg8DSsyW5Dra4bx4XUDq38NE&s=1759158492&e=43200&v=1057520&i=0.0&sp=0' },
                 { id: 'el-leab-maa-el-eyal', title: 'اللعب مع العيال', year: 2024, genre: 'كوميدي', poster: 'https://i.postimg.cc/wMrDtcwF/image.jpg', description: 'مدرس تاريخ يُنقل إلى منطقة صحراوية، فيواجه العديد من العقبات التي لم تكن في الحسبان.', rating: 7.5, watchLink: 'https://hls4-cdn5.strmupcdn.cc/hls/AdfhxZmVnqFurub2DUJNIpZm7wyEVr/index_1920x1080.m3u8' },
+                { id: 'siko-siko', title: 'سيكو سيكو', year: 2025, genre: 'كوميدي', poster: 'https://i.ibb.co/RGXk2DDy/rl-NIIPi3pm7k-Y5-Mgi-N3g-DHESEkk-533x800.webp', description: 'فيلم كوميدي جديد مليء بالمواقف المضحكة والمفارقات.', rating: 7.2, watchLink: 'https://p1-hls2-cdn1.strmupcdn.cc/hls/w4foNxW4ROjcR4wN1SuwGYaTSmsqrA/index_1280x720.m3u8?token=7e6413769f87b0b559b4946c79b81f40-1759226234-197.35.77.8-6aeaa7e84ec69e0c16ac9efcaed6dc27b76e59f546e59e9763410346bd24b37f' },
                 { id: 'ahl-el-kahf', title: 'أهل الكهف', year: 2024, genre: 'فانتازيا, تاريخي', poster: 'https://i.postimg.cc/d1L2JxBD/x-Iiv-Uefce-D30w-Iy-ZAK1z55-SBv-TT-533x800.webp', description: 'صراع بين ثلاثة قساوسة وحاكم روماني، ينتهي بهروبهم واختبائهم في أحد الكهوف.', rating: 7.9, watchLink: 'https://vsped-main1-bgv.cdnz.quest/hls2/01/00204/7be0gzhd1r3v_l/index-v1-a1.m3u8?t=hEVjN0DNEYdqTrslpR5PfK27e7g3TftTDcuXtjdCK1M&s=1759198269&e=43200&v=253531&i=0.0&sp=0' },
                 { id: 'kera-wel-gen', title: 'كيرة والجن', year: 2022, genre: 'تاريخي, دراما', poster: 'https://i.postimg.cc/dQG7GFLw/Poster-Keerah-Wel-Gen-540x800.webp', description: 'يرصد الفيلم حالة الغليان بالشارع المصري بالتزامن مع ثورة 1919، ويوحد مصائر كيرة والجن للنضال ضد المحتل.', rating: 9.0, watchLink: 'https://vsped-store6-vcy.cdnz.quest/hls2/01/00125/nlq4aa8nvltw_l/index-v1-a1.m3u8?t=chzwGP5KtIv3uBtUtDHXbUGHahUKs1w_X2AU9smG0ts&s=1759198173&e=43200&v=252504&i=0.0&sp=0' },
                 { id: 'el-feel-el-azraq-2', title: 'الفيل الأزرق 2', year: 2019, genre: 'رعب, غموض', poster: 'https://i.postimg.cc/ry9V8wD0/5d4ebd021c2ef-185052-500x714.webp', description: 'بعد 5 سنوات، يتزوج (يحيى) من (لبنى)، ويتم استدعاؤه لقسم الحالات الخطرة، ليلتقي بمن يتلاعب بحياته وحياة أسرته.', rating: 8.7, watchLink: 'https://fhd20a14.dls4all.online/d/2uqdilvsfsrnuwfu2r6i5px6vzxizbjduchezhoxdmh4ighkyyv5ju2ldfgnrovecve5go4e/video.mp4' },
                 { id: 'el-harifa', title: 'الحريفة', year: 2024, genre: 'دراما, رياضي', poster: 'https://i.postimg.cc/Vk9gNnCq/u-Nd-AFjr0gz-L4-Na-Jw1lpg-W5-On0-FM-533x800.webp', description: '(ماجد) يترك حياة الرخاء وينتقل لمدرسة حكومية، ويكتسب احترام زملائه بسبب مهارته في كرة القدم.', rating: 7.8, watchLink: 'https://vsped-fs4-eci.cdnz.quest/hls2/01/00174/gzyqj7swpsfs_n/index-v1-a1.m3u8?t=9yMATqNDlKeY812MWQg26FU_nTrpIPVWPnZiM7UpYaM&s=1759158753&e=43200&v=1063522&i=0.0&sp=0' },
-                { id: 'siko-siko', title: 'سيكو سيكو', year: 2025, genre: 'كوميدي', poster: 'https://i.ibb.co/RGXk2DDy/rl-NIIPi3pm7k-Y5-Mgi-N3g-DHESEkk-533x800.webp', description: 'فيلم كوميدي جديد مليء بالمواقف المضحكة والمفارقات.', rating: 7.2, watchLink: 'https://p1-hls2-cdn1.strmupcdn.cc/hls/w4foNxW4ROjcR4wN1SuwGYaTSmsqrA/index_1280x720.m3u8?token=7e6413769f87b0b559b4946c79b81f40-1759226234-197.35.77.8-6aeaa7e84ec69e0c16ac9efcaed6dc27b76e59f546e59e9763410346bd24b37f' },
                 { id: 'restart', title: 'ريستارت', year: 2025, genre: 'أكشن, تشويق', poster: 'https://i.ibb.co/DDbcjL55/i7az-Evi5-NTa-Dzaj7d-Qii-Jy-X1-BEI-533x800.webp', description: 'فيلم أكشن وتشويق يعود فيه البطل لبداية جديدة مليئة بالمخاطر.', rating: 8.5, watchLink: 'https://hls1-cdn18.strmupcdn.cc/hls/dV2Uxqr7qi1V1lRP4MKvyci91zb3vE/index_1720x720.m3u8?token=ab1976adb6ed899b631b9ee9ad6ba9d8-1759226120-197.35.77.8-1c068ee0a21767d76efd683a902d410927a2ec376add99d56a6d68c69d777ff0' },
                 { id: 'el-system', title: 'السيستم', year: 2024, genre: 'كوميدي, رومانسي', poster: 'https://i.ibb.co/Z6fS323q/660x990-533x800.webp', description: 'شاب يعاني من الفشل في العلاقات العاطفية، حتى يكتشف نظامًا جديدًا للتعامل مع النساء.', rating: 7.8, watchLink: 'https://hls1-cdn42.strmupcdn.cc/hls/1oxWOOyPX9PzhT0YE0Ahv4iz032Nut/index_1720x720.m3u8' },
                 { id: 'ahmed-w-ahmed', title: 'أحمد وأحمد', year: 2025, genre: 'كوميدي', poster: 'https://i.ibb.co/6JYnjtcw/232380.jpg', description: 'مغامرات كوميدية تجمع بين شخصيتين متناقضتين.', rating: 7.0, watchLink: 'https://hls1-cdn7.strmupcdn.cc/hls/iXVyzze47LXEZUmpUvueXoX7pZJAcL/index_1280x720.m3u8?token=cf0646a9c4e14605a8b6584f5e54b728-1759227934-197.35.77.8-c2e1076c4f916779531a4f6832acdca813371e3cfc26dab7ad26be8412d10ed9', quality: 'HDCAM' },
@@ -279,6 +279,7 @@
             if (detailsPage && homePage) {
                 detailsPage.classList.add('page-hidden');
                 homePage.classList.remove('page-hidden');
+                location.hash = '';
                 window.scrollTo(0, 0);
             }
         }
@@ -303,11 +304,12 @@
         function showDetailsPage(id, type) {
             const content = db[type].find(item => item.id === id);
             if (!content) return;
+            
             const hasValidLink = content.watchLink && content.watchLink !== '#';
             detailsPage.innerHTML = `<div class="min-h-screen">
                 <div class="absolute inset-0 h-[60vh] -z-10"><img src="${content.poster}" class="w-full h-full object-cover opacity-20"><div class="absolute inset-0 bg-gradient-to-t from-[var(--background-dark)] via-[var(--background-dark)] to-transparent"></div></div>
                 <div class="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-20 relative">
-                    <button onclick="showHomePage()" class="mb-8 bg-black/50 hover:bg-black/80 font-bold py-2 px-5 rounded-full transition-colors backdrop-blur-sm"><i class="fas fa-arrow-right ml-2"></i> العودة</button>
+                    <a href="#" class="mb-8 bg-black/50 hover:bg-black/80 font-bold py-2 px-5 rounded-full transition-colors backdrop-blur-sm inline-block"><i class="fas fa-arrow-right ml-2"></i> العودة</a>
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
                         <div class="md:col-span-4 lg:col-span-3"><img src="${content.poster}" alt="${content.title}" class="w-full rounded-lg shadow-2xl shadow-black/50"></div>
                         <div class="md:col-span-8 lg:col-span-9">
@@ -366,24 +368,7 @@
                 setTimeout(()=>m.classList.add('invisible'),300);
             }
         }
-        function openWatchModal(url, title) {
-            if (!url || url === '#') return;
-            const video = document.getElementById('video-player');
-            const modalTitle = document.getElementById('video-modal-title');
-            if(modalTitle) modalTitle.innerText = `مشاهدة: ${title}`;
-            if (hls) hls.destroy();
-            if (Hls.isSupported() && url.includes('.m3u8')) {
-                hls = new Hls(); hls.loadSource(url); hls.attachMedia(video);
-            } else if (video) { video.src = url; }
-            openModal('video-modal');
-        }
-        function closeWatchModal() {
-            const video = document.getElementById('video-player');
-            if (video) { video.pause(); video.src = ''; }
-            if (hls) { hls.destroy(); hls = null; }
-            closeModal('video-modal');
-        }
-
+        
         // --- APP INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
             // Assign global element variables
@@ -393,7 +378,7 @@
 
             // --- RENDER FUNCTIONS (scoped to DOMContentLoaded) ---
             function createCard(item, type, delay) {
-                return `<div class="card-container group" style="animation-delay: ${delay}ms" onclick="showDetailsPage('${item.id}', '${type}')">
+                return `<a href="#details/${type}/${item.id}" class="card-container group" style="animation-delay: ${delay}ms">
                     <div class="card-image-wrapper">
                         <img src="${item.poster}" alt="${item.title}" class="w-full aspect-[2/3] object-cover">
                         <div class="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors"></div>
@@ -407,23 +392,23 @@
                         <h3 class="font-bold text-sm sm:text-base text-white truncate group-hover:golden-text transition-colors">${item.title}</h3>
                         <p class="text-xs text-gray-400">${item.year} - ${item.genre}</p>
                     </div>
-                </div>`;
+                </a>`;
             }
 
             function renderHomePageContent(searchTerm = '') {
                 const searchLower = searchTerm.toLowerCase();
 
-                const filterAndRender = (data, gridId) => {
+                const filterAndRender = (data, gridId, type) => {
                     const grid = document.getElementById(gridId);
                     if (!grid) return;
                     const filteredData = data.filter(item => item.title.toLowerCase().includes(searchLower));
-                    grid.innerHTML = filteredData.map((item, i) => createCard(item, item.type || (db.movies.includes(item) ? 'movies' : 'series'), i * 50)).join('');
+                    grid.innerHTML = filteredData.map((item, i) => createCard(item, type, i * 50)).join('');
                     const section = grid.closest('section');
                     if (section) section.style.display = filteredData.length > 0 ? 'block' : 'none';
                 };
 
-                filterAndRender(db.movies, 'movies-grid');
-                filterAndRender(db.series, 'series-grid');
+                filterAndRender(db.movies, 'movies-grid', 'movies');
+                filterAndRender(db.series, 'series-grid', 'series');
                 
                 const topRated = [...db.movies, ...db.series]
                     .sort((a, b) => b.rating - a.rating)
@@ -431,10 +416,10 @@
                 const topRatedList = document.getElementById('top-rated-list');
                 if (topRatedList) topRatedList.innerHTML = topRated.map(item => {
                     const type = db.movies.includes(item) ? 'movies' : 'series';
-                    return `<div class="flex items-center space-x-reverse space-x-3 cursor-pointer group py-3" onclick="showDetailsPage('${item.id}', '${type}')">
+                    return `<a href="#details/${type}/${item.id}" class="flex items-center space-x-reverse space-x-3 cursor-pointer group py-3">
                         <img src="${item.poster}" class="w-12 h-20 object-cover rounded-md flex-shrink-0" alt="${item.title}">
                         <div><h4 class="font-bold text-sm group-hover:golden-text transition-colors">${item.title}</h4><p class="text-xs text-gray-400">${item.genre}</p><p class="text-xs font-bold text-amber-400"><i class="fas fa-star text-xs"></i> ${item.rating}</p></div>
-                    </div>`;
+                    </a>`;
                 }).join('');
             }
 
@@ -450,7 +435,7 @@
 
                 sliderContainer.innerHTML = sliderContent.map((item, index) => {
                     const type = db.movies.some(m => m.id === item.id) ? 'movies' : 'series';
-                    return `<div class="slider-item" data-index="${index}" onclick="showDetailsPage('${item.id}', '${type}')">
+                    return `<a href="#details/${type}/${item.id}" class="slider-item" data-index="${index}">
                         <img src="${item.poster}" class="slider-bg">
                         <div class="slider-content container mx-auto">
                             <div class="flex items-center gap-6 sm:gap-10">
@@ -468,13 +453,29 @@
                                 </div>
                             </div>
                         </div>
-                    </div>`;
+                    </a>`;
                 }).join('');
                 
                 sliderDotsContainer.innerHTML = sliderContent.map((_, index) => 
                     `<button class="slider-dot" data-index="${index}"></button>`
                 ).join('');
             }
+            
+            function router() {
+                const hash = window.location.hash;
+                if (hash.startsWith('#details/')) {
+                    const [, type, id] = hash.split('/');
+                    if (id && type) {
+                        showDetailsPage(id, type, false);
+                    } else {
+                        showHomePage();
+                    }
+                } else {
+                    showHomePage();
+                }
+            }
+
+            window.addEventListener('hashchange', router);
 
             function updateSlider() {
                 const sliderItems = document.querySelectorAll('.slider-item');
@@ -532,13 +533,14 @@
             const searchBar = document.getElementById('search-bar');
             if(searchBar) searchBar.addEventListener('input', (e) => renderHomePageContent(e.target.value));
 
-            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeWatchModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal('contact-modal'); closeModal('policy-modal'); closeModal('faq-modal');});
 
             // --- INITIALIZE APP ---
             renderHomePageContent();
             renderSlider();
             updateSlider();
             initSliderEvents();
+            router(); // Handle initial page load
         });
     </script>
 </body>
